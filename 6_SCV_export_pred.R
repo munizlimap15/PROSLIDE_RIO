@@ -8,11 +8,23 @@ library(raster)
 library(RSAGA)
 library(glmnet)
 
-# Set working directory
-setwd("C:/Users/pedro/Documents/PROslide_RIO/DATA")
+setwd("E:/PROslide_RIO/DATA2")
 
 # Load the training dataset
-load("C:/Users/pedro/Documents/PROslide_RIO/DATA/final_train.Rd")
+load("E:/PROslide_RIO/DATA/final_train.Rd")
+
+# Remove rows where slide == TRUE and slope <= 5
+final_train_t <- final_train %>%
+  filter((slide == TRUE & slope >= 5))
+
+# Remove rows where slide == TRUE and slope <= 5
+final_train_f <- final_train %>%
+  filter(!(slide == FALSE)) %>% sample_n(nrow(final_train_t))
+
+final_train=rbind(final_train_f, final_train_t)
+
+#final_train$tpi=final_train$tpi
+#final_train$tpi2=NULL
 # Define a function to load a raster and set its CRS
 load_and_set_crs <- function(file_name, crs_string) {
   if (!file.exists(file_name)) {
@@ -34,7 +46,7 @@ prof_curv        <- load_and_set_crs("prof_curv.asc", crs_string)
 rel_slp_position <- load_and_set_crs("rel_slp_position.asc", crs_string)
 slope            <- load_and_set_crs("slope.asc", crs_string)
 twi              <- load_and_set_crs("twi.asc", crs_string)
-tpi              <- load_and_set_crs("tpi.asc", crs_string)
+tpi              <- load_and_set_crs("tpi_class.asc", crs_string)
 landcover19      <- load_and_set_crs("landcover19.asc", crs_string)
 geomorph         <- load_and_set_crs("geomorph.asc", crs_string)
 geol             <- load_and_set_crs("geol.asc", crs_string)
@@ -48,12 +60,15 @@ summary(as.factor(final_train$tpi))
 
 # Data transformation function
 my.trafo = function(x) {
-  x$geomorph = as.factor(x$geomorph)
-  x$geol = as.factor(x$geol)
+  print("Inside my.trafo, column names are:")
+  print(colnames(x))
   x$tpi = as.factor(x$tpi)
   x$landcover19 = as.factor(x$landcover19)
+  x$geomorph = as.factor(x$geomorph)
+  x$geol = as.factor(x$geol)
   return(x)
 }
+
 
 # Apply the transformation to the training dataset
 final_train = my.trafo(final_train)
@@ -85,16 +100,15 @@ mean(cv1$error_rep$test_auroc)
 
 # Apply the model to multiple raster layers
 multi.local.function(
-    #in.grids = c("dtm", "prof_curv", "slope", "landcover19", "geomorph", "geol", "tpi"),  
-    #in.grids = c("dtm.asc", "prof_curv.asc", "slope.asc", "landcover19.asc", "geomorph.asc", "geol.asc", "tpi.asc"), 
-    in.grids = c("dtm.asc", "landcover19.asc", "geomorph.asc", "geol.asc"),
+    in.grids = c("dtm", "prof_curv", "slope", "landcover19", "geomorph", "geol", "tpi_class"),  # Included "tpi_class.asc"
     out.varnames = "gam_RIO",
     fun = grid.predict, 
     control.predict = list(type = "response"),
     fit = gam_fit,  
-    trafo = my.trafo, 
+    trafo = my.trafo,  # Make sure my.trafo accounts for "tpi"
     quiet = FALSE 
 )
+
 
 gam_RIO             <- raster("gam_RIO.asc")
 

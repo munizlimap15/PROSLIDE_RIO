@@ -11,6 +11,9 @@ setwd("C:/Users/pedro/Documents/PROslide_RIO/DATA")
 RJ <- sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/StudyArea.shp")
 
 rioslides = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+# Reproject to WGS 84 / UTM zone 23S
+rioslides <- sf::st_transform(rioslides, crs = "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs")
+
 summary(as.factor(rioslides$tipologia1))
 #0    1    2    3    4    5    6    7    8    9   10   11 
 #59 1659   32   25    1  323   55  449   12   71  155  157 
@@ -107,7 +110,7 @@ save(train, file = "train.Rd", compress = TRUE)
 
 summary(train)
 
-
+setwd("E:/PROslide_RIO/DATA2")
 dtm              <- raster("dtm.asc")
 aspect           <- raster("aspect.asc")
 plan_curv        <- raster("plan_curv.asc")
@@ -115,7 +118,7 @@ prof_curv        <- raster("prof_curv.asc")
 rel_slp_position <- raster("rel_slp_position.asc")
 slope            <- raster("slope.asc")
 twi              <- raster("twi.asc")
-tpi              <- raster("tpi.asc")
+tpi              <- raster("tpi_class.asc")
 landcover19      <- raster("landcover19.asc")
 geomorph         <- raster("geomorph.asc")
 geol             <- raster("geol.asc")
@@ -167,6 +170,7 @@ summary(as.factor(final_train$geol))
 
 # Remove rows with NA values
 final_train <- final_train %>% drop_na()
+final_train <- final_train[!(final_train$geomorph == 255 | final_train$geol == 255),]
 
 # Count the number of TRUE and FALSE in the 'slide' column
 n_true <- sum(final_train$slide == "TRUE")

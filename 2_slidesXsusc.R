@@ -25,7 +25,7 @@ rioslides <- rioslides %>%
   dplyr::filter(is.na(year) | year != 3748)
 
 rioslides$has_date <- ifelse(is.na(rioslides$data), "No Date", "Has Date")
-sf::st_write(rioslides, "C:/Users/pedro/Documents/PROslide_RIO/DATA/only_landslides_2023.shp", append=FALSE)
+#sf::st_write(rioslides, "C:/Users/pedro/Documents/PROslide_RIO/DATA/only_landslides_2023.shp", append=FALSE)
 
 # Reclassify the values 1, 2, 3 to new values 1, 2, 3
 reclass_matrix <- matrix(c(1, 1, 1,
@@ -69,21 +69,28 @@ y_coords <- coordinates[, "Y"]
 rioslides$X <- x_coords
 rioslides$Y <- y_coords
 
-# Convert to a regular data frame if needed
-# rioslides <- as.data.frame(rioslides_sf)rioslides
-
 # Add an ID
 rioslides$ID <- seq(nrow(rioslides))
 
-rioslides <- rioslides[!rowSums(is.na(rioslides[, 24:25])),]
+# Remove rows with NA in coordinates
+rioslides <- rioslides[!rowSums(is.na(rioslides[, c("X", "Y")])),]
 
+# Convert X and Y to numeric if they are not already
+rioslides$X <- as.numeric(rioslides$X)
+rioslides$Y <- as.numeric(rioslides$Y)
 
-#Create a SPDF from the inventories
-rioslides_spdf       <- SpatialPointsDataFrame(rioslides[,24:25],   rioslides) 
+# Create a matrix of coordinates
+coords_matrix <- cbind(rioslides$X, rioslides$Y)
 
-#Extracting from predictIONS
-beginCluster ()
-rioslides_spdf_extract   = raster::extract( pred, rioslides_spdf,    df=TRUE)
+# Create SpatialPoints
+sp_points <- SpatialPoints(coords = coords_matrix)
+
+# Convert to SpatialPointsDataFrame
+rioslides_spdf <- SpatialPointsDataFrame(sp_points, data = as.data.frame(rioslides))
+
+# Extracting from predictions
+beginCluster()
+rioslides_spdf_extract <- raster::extract(pred, rioslides_spdf, df = TRUE)
 endCluster()
 
 
@@ -98,27 +105,33 @@ Summary<- rioslides %>%
   dplyr::summarise(n_slide = n())
 
 
-pred_recode <- c("1" = "Baixo",
-                 "2" = "Medio",
-                 "3" = "Alto")
+pred_recode <- c("1" = "Low",
+                 "2" = "Medium",
+                 "3" = "High")
 
 
 Summary$suscetibilidade_rio=as.character(Summary$suscetibilidade_rio)
 Summary$pred_recode      <- as.character(pred_recode  [Summary$suscetibilidade_rio])
 
-Summary$pred_recode <- factor(Summary$pred_recode, levels=c("Baixo", "Medio", "Alto"))
+Summary$pred_recode <- factor(Summary$pred_recode, levels=c("Low", "Medium", "High"))
 
-ggplot(Summary) +
+gg=ggplot(Summary) +
   aes(x = pred_recode, weight = n_slide, fill = pred_recode) + # Added fill inside aes
   geom_bar(color="black") +
-  scale_fill_manual(values = alpha(c('Baixo' = "white", 'Medio' = "#EFC000FF", 'Alto' = "darkorange1"), 0.7)) +
+  scale_fill_manual(values = alpha(c('Low' = "white", 'Medium' = "#EFC000FF", 'High' = "darkorange1"), 0.7)) +
   theme_minimal()+
   geom_text(aes(label = n_slide, y = n_slide / 2), vjust = -0.5) + # Adding the text
-  labs(title = "", y="N slides", x="Categorias",
-       caption = "Aqui, apenas os pontos citados como 'Escorregamento de solo' foram usados (Tipologia = 1). Esses mesmos somam 1656 ocorrencias.")+
-  theme(legend.position = "none") # Hide legend
+  labs(title = "", y="N slides", x="Prediction Categories",
+       #caption = "Aqui, apenas os pontos citados como 'Escorregamento de solo' foram usados (Tipologia = 1). Esses mesmos somam 1656 ocorrencias.")+
+       caption = "Only the obs mentioned as 'shallow landslides' were used (Typology = 1).")+
+  theme(legend.position = "none",
+        text = element_text(size=18),
+        plot.caption = element_text(face = "italic", size=10, color="gray40"))
 
 
+png("E:/PROslide_RIO/PRESENTATIONS/plot2.png", width = 500, height = 400)
+print(gg)
+dev.off()
 
 
 pred_pts <- rasterToPoints(pred, spatial = TRUE)
