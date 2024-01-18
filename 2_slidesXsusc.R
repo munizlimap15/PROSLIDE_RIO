@@ -6,12 +6,12 @@ library(lubridate)
 library(mapview)
 
 
-RJ = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/StudyArea.shp")
+RJ = sf::st_read("D:/PROslide_RIO/DATA/StudyArea.shp")
 
-pred = raster("C:/Users/pedro/Documents/PROslide_RIO/Susc_heuristic/suscetibilidade_rio.tif")
+pred = raster("D:/PROslide_RIO/Susc_heuristic/suscetibilidade_rio.tif")
 
 # Read the shapefile using sf package
-rioslides <- sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+rioslides <- sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 summary(as.factor(rioslides$tipologia1))
 #0    1    2    3    4    5    6    7    8    9   10   11 
 #59 1659   32   25    1  323   55  449   12   71  155  157 
@@ -25,7 +25,7 @@ rioslides <- rioslides %>%
   dplyr::filter(is.na(year) | year != 3748)
 
 rioslides$has_date <- ifelse(is.na(rioslides$data), "No Date", "Has Date")
-#sf::st_write(rioslides, "C:/Users/pedro/Documents/PROslide_RIO/DATA/only_landslides_2023.shp", append=FALSE)
+#sf::st_write(rioslides, "D:/PROslide_RIO/DATA/only_landslides_2023.shp", append=FALSE)
 
 # Reclassify the values 1, 2, 3 to new values 1, 2, 3
 reclass_matrix <- matrix(c(1, 1, 1,

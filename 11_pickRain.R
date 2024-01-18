@@ -63,7 +63,7 @@ for (date in unique(landslide_dates)) {
   head(combined_data)
   #landslide_raster_values<- as.data.frame(extracted_values) %>% mutate (ID=i)
 }
-rm(combined_data_name)
+
 
 # Pattern to match the data frames
 pattern <- "^combined_data_"
@@ -95,6 +95,17 @@ head(final_rioslides)
 test <- subset(final_rioslides, DailyRainfall == 0)
 summary(as.factor(test$data))
 
+################################################################################
+################################################################################
+################################################################################
+# Convert the columns to numeric and round to 1 decimal place
+final_rioslides$DailyRainfall      <- round(as.numeric(final_rioslides$DailyRainfall), 1)
+final_rioslides$MaxHourlyIntensity <- round(as.numeric(final_rioslides$MaxHourlyIntensity), 1)
+final_rioslides$accum2days         <- round(as.numeric(final_rioslides$accum2days), 1)
+final_rioslides$accum5days         <- round(as.numeric(final_rioslides$accum5days), 1)
+final_rioslides$accum10days        <- round(as.numeric(final_rioslides$accum10days), 1)
+final_rioslides$accum15days        <- round(as.numeric(final_rioslides$accum15days), 1)
+
 summary(final_rioslides$DailyRainfall)
 summary(final_rioslides$MaxHourlyIntensity)
 summary(final_rioslides$accum2days)
@@ -102,10 +113,11 @@ summary(final_rioslides$accum5days)
 summary(final_rioslides$accum10days)
 summary(final_rioslides$accum15days)
 
-
-
-
-
+# # Subsetting the final_rioslides to include only the specified variables
+# final_rioslides_subset <- final_rioslides[c("DailyRainfall", "MaxHourlyIntensity", "accum2days", 
+#                                             "accum5days", "accum10days", "accum15days", 
+#                                             "geometry", "data")]
+st_write(final_rioslides, 'D:/PROslide_RIO/DATA2/final_rioslides.shp')
 
 
 

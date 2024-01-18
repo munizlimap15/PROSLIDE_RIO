@@ -8,10 +8,10 @@ library(gstat)
 library(lubridate)
 
 # Read the shapefile
-shapefile_path <- "E:/PROslide_RIO/DATA/stations.shp"
+shapefile_path <- "D:/PROslide_RIO/DATA/stations.shp"
 stations_sf <- st_read(shapefile_path)
 names(stations_sf)[names(stations_sf) == "Estação"] <- "Station"
-load("E:/PROslide_RIO/DATA2/daily_totals2.Rd") 
+load("D:/PROslide_RIO/DATA2/daily_totals2.Rd") 
 
 
 del= subset(daily_totals, Date == as.Date("2009-12-31")) 
@@ -28,7 +28,7 @@ daily_totals_sf <- daily_totals %>%
 
 ####################################################
 # Template raster to guarantee perfect fit
-template_raster <- raster("E:/PROslide_RIO/DATA2/dtm.asc")
+template_raster <- raster("D:/PROslide_RIO/DATA2/dtm.asc")
 template_raster = template_raster * 0
 # Aggregating the raster to 100m resolution
 template_raster <- aggregate(template_raster, fact = 20)
@@ -40,7 +40,7 @@ template_sf <- st_as_sf(as.data.frame(template_points), coords = c("x", "y"), cr
 
 # Get the unique dates for which you have data
 #unique_dates <- unique(daily_totals$Date)
-rioslides = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+rioslides = sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 landslide_dates <- unique(rioslides$data)
 landslide_dates <- na.omit(landslide_dates)
 landslide_dates <- as.Date(landslide_dates, origin = "1970-01-01")
@@ -54,8 +54,8 @@ parameters <- c("DailyRainfall", "MaxHourlyIntensity", "accum2days", "accum5days
 
 ####################################################
 # Create the dir to receive the raster files
-#dir.create("E:/PROslide_RIO/DATA2/rain_rasters3/", recursive = TRUE)
-raster_output_directory = "E:/PROslide_RIO/DATA2/rain_rasters4/"
+#dir.create("D:/PROslide_RIO/DATA2/rain_rasters3/", recursive = TRUE)
+raster_output_directory = "D:/PROslide_RIO/DATA2/rain_rasters4/"
 
 ####################################################
 # Determine same CRS
@@ -130,10 +130,10 @@ for (date in landslide_dates) {
 # library(gstat)
 # 
 # # Read the shapefile
-# shapefile_path <- "E:/PROslide_RIO/DATA/stations.shp"
+# shapefile_path <- "D:/PROslide_RIO/DATA/stations.shp"
 # stations_sf <- st_read(shapefile_path)
 # names(stations_sf)[names(stations_sf) == "Estação"] <- "Station"
-# load("E:/PROslide_RIO/DATA2/daily_totals.Rd") 
+# load("D:/PROslide_RIO/DATA2/daily_totals.Rd") 
 # 
 # ####################################################
 # # Give the spatial component to the data
@@ -143,7 +143,7 @@ for (date in landslide_dates) {
 # 
 # ####################################################
 # # Template raster to guarantee perfect fit
-# template_raster <- raster("E:/PROslide_RIO/DATA2/dtm.asc")
+# template_raster <- raster("D:/PROslide_RIO/DATA2/dtm.asc")
 # template_raster = template_raster * 0
 # # Aggregating the raster to 100m resolution
 # template_raster <- aggregate(template_raster, fact = 20)
@@ -166,8 +166,8 @@ for (date in landslide_dates) {
 # 
 # ####################################################
 # # Create the dir to recieve the raster files
-# dir.create("E:/PROslide_RIO/DATA2/rain_rasters/", recursive = TRUE)
-# raster_output_directory = "E:/PROslide_RIO/DATA2/rain_rasters/"
+# dir.create("D:/PROslide_RIO/DATA2/rain_rasters/", recursive = TRUE)
+# raster_output_directory = "D:/PROslide_RIO/DATA2/rain_rasters/"
 # 
 # ####################################################
 # # Determine same CRS
