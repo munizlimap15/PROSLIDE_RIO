@@ -6,11 +6,11 @@ library(raster)
 library(RSAGA)
 
 rm(list = ls()) 
-setwd("C:/Users/pedro/Documents/PROslide_RIO/DATA")
+setwd("D:/PROslide_RIO/DATA")
 
-RJ <- sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/StudyArea.shp")
+RJ <- sf::st_read("D:/PROslide_RIO/DATA/StudyArea.shp")
 
-rioslides = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+rioslides = sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 # Reproject to WGS 84 / UTM zone 23S
 rioslides <- sf::st_transform(rioslides, crs = "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs")
 
@@ -37,9 +37,9 @@ plot(d$x, d$y, pch=16, cex=0.1)
 set.seed(1)
 
 # Define "extent" to sample the non-Landslides as the same extent of the study area (in this case, the ascii-grid "mask" is read out)
-mask = raster("C:/Users/pedro/Documents/PROslide_RIO/DATA/mask.asc")
+mask = raster("D:/PROslide_RIO/DATA/mask.asc")
 # Write the raster object to an ASCII grid file
-#writeRaster(mask, filename="C:/Users/pedro/Documents/PROslide_RIO/DATA/mask.asc", format="ascii",overwrite=TRUE)
+#writeRaster(mask, filename="D:/PROslide_RIO/DATA/mask.asc", format="ascii",overwrite=TRUE)
 extent1 = read.ascii.grid.header("mask")
 extent1
 
@@ -101,16 +101,15 @@ summary(train$slide)
 
 plot(train$x, train$y, pch=16, cex=0.1, main="red: TRUE; black: FALSE", col=train$slide)
 
-#setwd("C:/Users/pedro/Documents/PROslide_RIO/DATA")
+#setwd("D:/PROslide_RIO/DATA")
 #Save the data under "train.Rd"
 save(train, file = "train.Rd", compress = TRUE)
 
-#Diese Daten koennen beim naechsten mal direkt ueber folgenden Befehl geladen werden (entfernen von #):
 (load("train.Rd"))
 
 summary(train)
 
-setwd("E:/PROslide_RIO/DATA2")
+setwd("D:/PROslide_RIO/DATA2")
 dtm              <- raster("dtm.asc")
 aspect           <- raster("aspect.asc")
 plan_curv        <- raster("plan_curv.asc")

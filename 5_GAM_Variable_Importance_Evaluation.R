@@ -23,36 +23,36 @@ library(RSAGA)
 # Load the glmnet package
 library(glmnet)
 
-(load("C:/Users/pedro/Documents/PROslide_RIO/DATA/final_train.Rd"))
+(load("D:/PROslide_RIO/DATA2/final_train.Rd"))
 summary(final_train)
 summary(as.factor(final_train$geol))
 summary(as.factor(final_train$geomorph))
 summary(as.factor(final_train$aspect))
-summary(as.factor(final_train$tpi))
+summary(as.factor(final_train$tpi_class))
 
 my.trafo = function(x) 
 {
   x$geomorph = as.factor(x$geomorph)
   x$geol = as.factor(x$geol)
-  x$aspect = as.factor(x$aspect_class)
+  x$aspect = as.factor(x$aspect)
   x$tpi = as.factor(x$tpi_class)
-  x$landcover = as.factor(x$landcover19_reclass)
+  x$landcover = as.factor(x$landcover19)
   return(x)
 }
 final_train = my.trafo(final_train)
 final_train$aspect_class = NULL
 final_train$tpi_class    = NULL
-final_train$landcover19_reclass  = NULL
+final_train$landcover19  = NULL
 
 summary(final_train)
-
+str(final_train)
 
 
 # Assuming final_train is your data frame and slide is your response variable
 # Make sure to replace 'final_train' and 'slide' with your actual data frame and response variable names
 
-fo1 <- slide ~ s(dtm_5m) + s(plan_curv) + s(prof_curv) + s(rel_slp_pos) + s(slope) + s(twi) + # Numerical
-  landcover + geomorph + geol + aspect + tpi                                                  # Categorical
+fo1 <- slide ~ s(dtm) + s(plan_curv) + s(prof_curv) + s(rel_slp_position) + s(slope) + s(twi) + # Numerical
+  landcover + geomorph + geol #+ aspect + tpi                                                  # Categorical
  
 # Fit the GAM model
 gam_fit <- gam(fo1, data = final_train, family = binomial)
