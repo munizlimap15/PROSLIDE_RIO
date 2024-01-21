@@ -52,7 +52,7 @@ str(final_train)
 # Make sure to replace 'final_train' and 'slide' with your actual data frame and response variable names
 
 fo1 <- slide ~ s(dtm) + s(plan_curv) + s(prof_curv) + s(rel_slp_position) + s(slope) + s(twi) + # Numerical
-  landcover + geomorph + geol #+ aspect + tpi                                                  # Categorical
+  landcover + geomorph #+ geol #+ aspect + tpi                                                  # Categorical
  
 # Fit the GAM model
 gam_fit <- gam(fo1, data = final_train, family = binomial)
