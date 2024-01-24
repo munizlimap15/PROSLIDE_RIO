@@ -1,4 +1,4 @@
-# RIOSLIDE - Landslide
+# RIOSLIDE 
 
 <p align="center">
   <img
@@ -37,6 +37,18 @@ For more information and updates on the project, please visit [RioSLIDE](https:/
 **Additional Resources**
 
 - [ENGAGE UNIVIE](https://geographie.univie.ac.at/arbeitsgruppen/engage-geomorphologische-systeme-und-risikoforschung/) 
+
+**Acknowledgement:**
+
+While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq) and relates to the process number 234815/2014-0. The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives.
+
+<p align="center">
+  <img
+    src="/Shinny_app_RioSlide/www/CNPq.png"
+    width="300"  
+    height="300"> 
+</p>
+
 
 Feel free to contribute to the project or reach out for collaborations. Together, we can make a significant impact on reducing the risks associated with landslides in Rio de Janeiro.
 pedro.lima@univie.ac.at
