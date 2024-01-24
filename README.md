@@ -1,4 +1,4 @@
-# PROSLIDE_RIO - Landslide Risk Management in Rio de Janeiro
+# RIOSLIDE - Landslide
 
 <p align="center">
   <img
@@ -7,11 +7,11 @@
     height="300"> 
 </p>
 
-The PROSLIDE_RIO project focuses on analyzing and managing landslide risks in Rio de Janeiro. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide local authorities and residents with actionable insights to mitigate risks associated with landslides, especially during extreme weather conditions.
+The RioSLIDE project focuses on analyzing and managing landslide risks in Rio de Janeiro. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide local authorities and residents with actionable insights to mitigate risks associated with landslides, especially during extreme weather conditions.
 
 **Project Overview**
 
-The initiative builds on previous models and incorporates real-time data analysis to improve the accuracy of landslide predictions. By harnessing the power of modern data analytics, PROSLIDE_RIO enables stakeholders to make informed decisions, ensuring the safety and resilience of communities in vulnerable areas.
+The initiative builds on previous models and incorporates real-time data analysis to improve the accuracy of landslide predictions. By harnessing the power of modern data analytics, RioSLIDE enables stakeholders to make informed decisions, ensuring the safety and resilience of communities in vulnerable areas.
 
 **Key Features**
 
@@ -25,14 +25,14 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 **Citation**:
 
-Lima P, et al. (2023): PROSLIDE_RIO: Advanced Landslide Risk Management in Rio de Janeiro. [Month] 2023, Rio de Janeiro.-->
+Lima P, et al. (2023): RioSLIDE: Advanced Landslide Risk Management in Rio de Janeiro. [Month] 2023, Rio de Janeiro.-->
 
 **Acknowledgments**:
 - *Rio de Janeiro Municipality Government*;
 - [Pereira Passos Institute](https://www.rio.rj.gov.br/web/ipp/who-we-are)
 - [GeoRio](https://www.rio.rj.gov.br/web/georio/quem-somos)
 
-For more information and updates on the project, please visit [PROSLIDE_RIO](https://pedrohe.shinyapps.io/Shinny_app_RioSlide/).
+For more information and updates on the project, please visit [RioSLIDE](https://pedrohe.shinyapps.io/Shinny_app_RioSlide/).
 
 **Additional Resources**
 
