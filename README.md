@@ -2,11 +2,11 @@
 
 <p align="center">
   <img
-    src="/heatmap.png"
+    src="/rioSlide_logo.png"
     alt="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
     title="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
-    width="674"  <!-- Half the original width -->
-    height="357"> <!-- Half the original height -->
+    width="674"  
+    height="357"> 
 </p>
 
 The PROSLIDE_RIO project focuses on analyzing and managing landslide risks in Rio de Janeiro. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide local authorities and residents with actionable insights to mitigate risks associated with landslides, especially during extreme weather conditions.
