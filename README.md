@@ -1,7 +1,7 @@
 # PROSLIDE_RIO - Landslide Risk Management in Rio de Janeiro
 
 <img
-  src="/rioHeatmap.png"
+  src="/heatmap.png"
   alt="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
   title="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
   width="350"
