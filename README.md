@@ -2,9 +2,7 @@
 
 <p align="center">
   <img
-    src="/rioSlide_logo.png"
-    alt="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
-    title="Heatmap visualization of landslide susceptibility in Rio de Janeiro"
+    src="/rioSlide_logo.jpg"
     width="674"  
     height="357"> 
 </p>
