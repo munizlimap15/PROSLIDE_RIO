@@ -19,23 +19,25 @@ The initiative builds on previous models and incorporates real-time data analysi
 - **Predictive Modeling**: Utilizing advanced algorithms to forecast potential landslide occurrences.
 - **Community Engagement**: Working closely with local authorities and residents to disseminate information and implement preventive measures.
 
-**License**
+<!--**License**
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 **Citation**:
 
-Lima P, et al. (2023): PROSLIDE_RIO: Advanced Landslide Risk Management in Rio de Janeiro. [Month] 2023, Rio de Janeiro.
+Lima P, et al. (2023): PROSLIDE_RIO: Advanced Landslide Risk Management in Rio de Janeiro. [Month] 2023, Rio de Janeiro.-->
 
 **Acknowledgments**:
 - *Rio de Janeiro State Government*; Civil Defense Department
 - *National Institute for Space Research (INPE)*; Center for Earth System Science
 - *Local Communities*; for their invaluable support and cooperation
 
-For more information and updates on the project, please visit [PROSLIDE_RIO](https://github.com/munizlimap15/PROSLIDE_RIO).
+For more information and updates on the project, please visit [PROSLIDE_RIO](https://pedrohe.shinyapps.io/Shinny_app_RioSlide/).
 
 **Additional Resources**
 
-- [ENGAGE UNIVIE](https://geographie.univie.ac.at/arbeitsgruppen/engage-geomorphologische-systeme-und-risikoforschung/) - Learn more about the broader implications and methodologies involved in geospatial risk management.
+- [ENGAGE UNIVIE](https://geographie.univie.ac.at/arbeitsgruppen/engage-geomorphologische-systeme-und-risikoforschung/) 
 
 Feel free to contribute to the project or reach out for collaborations. Together, we can make a significant impact on reducing the risks associated with landslides in Rio de Janeiro.
+pedro.lima@univie.ac.at
+pedrohe@gmail.com
