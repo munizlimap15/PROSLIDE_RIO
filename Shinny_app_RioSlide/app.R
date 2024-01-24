@@ -1,6 +1,8 @@
 library(sf)
 library(leaflet)
 library(dplyr) 
+library(fontawesome)
+library(shiny)
 
 
 # source_dir <- "D:/PROslide_RIO/DATA"
@@ -27,18 +29,23 @@ library(dplyr)
 # }
 # 
 
-final_rioslides <-sf::st_read("landslides_2023.shp")
-study_area <- st_read("StudyArea.shp")
+final_rioslides     <- st_read("landslides_2023.shp")
+study_area          <- st_read("StudyArea.shp")
 Limite_Favelas_2019 <- st_read("Limite_Favelas_2019.shp")
+stations            <- st_read("stations.shp")
+
 
 # Ensure LA and MoNEW are in the same CRS
-final_rioslides <- sf::st_transform(final_rioslides, st_crs(study_area))
+final_rioslides     <- sf::st_transform(final_rioslides, st_crs(study_area))
 Limite_Favelas_2019 <- sf::st_transform(Limite_Favelas_2019, st_crs(study_area))
+stations            <- sf::st_transform(stations, st_crs(study_area))
+
 
 # Transform both to WGS84
-study_area_wgs84 <- st_transform(study_area, 4326)
+study_area_wgs84      <- st_transform(study_area, 4326)
 final_rioslides_wgs84 <- st_transform(final_rioslides, 4326)
-Limite_Favelas_2019 <- st_transform(Limite_Favelas_2019, 4326)
+Limite_Favelas_2019   <- st_transform(Limite_Favelas_2019, 4326)
+stations              <- st_transform(stations, 4326)
 # Removing rows with NA coordinates
 coords <- st_coordinates(final_rioslides_wgs84)
 final_rioslides_wgs84 <- final_rioslides_wgs84[!is.na(coords[, 'X']) & !is.na(coords[, 'Y']), ]
@@ -46,9 +53,6 @@ final_rioslides_wgs84 <- final_rioslides_wgs84[!is.na(coords[, 'X']) & !is.na(co
 
 
 
-library(shiny)
-library(leaflet)
-library(sf)
 
 ui <- fluidPage(
   #titlePanel("RioSlide"),
@@ -105,10 +109,34 @@ ui <- fluidPage(
                        " for data-related inquiries."
                )
              ),
+             
+             tags$hr(),
+             
+             h3(strong("SDGs: Project potential contributions to the Sustainable Development Goals (SDGs). ")),
+             
+             p(strong("Goal 4: Quality Education:"), 
+               "Enhancing public understanding and integrating landslide susceptibility knowledge into educational programs fosters preparedness and resilience. Additionally, the project is deeply invested in technology and knowlwdge transfer through the active supervision of students. By mentoring the next generation of scientists, we ensure that the state of teh art tools and methodologies developed through our research are passed on effectively."),
+             p(strong("Goal 9: Industry, Innovation, and Infrastructure:"), 
+               "The project plays a pivotal role in safeguarding infrastructure, which is a cornerstone for sustainable development. By protecting essential infrastructure from landslide damage, we conserve valuable resources that can then be channeled into other critical services such as education and healthcare. This not only fortifies the physical fabric of our communities but also supports broader societal welfare. Innovation is at the core of our approach; we maintain open repositories and actively publish in journals to ensure that our findings and technological advancements are accessible and can be built upon. This transparency and knowledge sharing are vital for continuous improvement in our field and for inspiring new, cost-effective solutions in disaster risk management and infrastructure resilience."),
+             p(strong("Goal 10: Reduce inequalities:"), 
+               "In the Rioslide project, we are acutely aware of the disproportionate impact landslides have on the most vulnerable populations, who are often situated in high-risk areas without the means to safeguard their communities. By identifying these high-susceptible  zones and implementing comprehensive susceptibility maps, we aim to inform urban development and disaster preparedness in a way that prioritizes these communities. Our initiative is not just about reducing the risk of landslides; it's about leveling the playing field. By making the entire city safer, we are actively working to reduce social and economic disparities, ensuring that safety and resilience are not privileges but basic rights for all citizens."),
+             p(strong("Goal 11: Sustainable Cities and Communities:"), 
+               "The project significantly enhances urban planning by providing detailed landslide susceptibility maps. These maps are crucial for urban planners and local authorities as they navigate the complexities of urban expansion and development strategies. By identifying areas at high risk for landslides, we enable city planners to make informed decisions about where to build and how to design communities that are both safe and sustainable. Our work ensures that urban growth is managed in harmony with the natural environment, minimizing risks to human life and property. This proactive approach to urban development supports the creation of resilient communities that can thrive for generations to come."),
+             p(strong("Goal 13: Climate Action:"), 
+               "In the face of escalating climate-related challenges, the Rioslide project is at the forefront of climate action. Our comprehensive mapping of landslide susceptibility is integral to developing robust climate change adaptation strategies. By understanding the intricate dynamics of extreme weather events and their impact on landslide patterns, we are paving the way for communities to be better prepared for the future. Our work not only contributes to immediate mitigation efforts but also enhances our collective understanding of how climate change influences geological phenomena. This knowledge is crucial for shaping policies and practices that ensure long-term resilience against the unpredictable nature of our changing climate, safeguarding communities and ecosystems alike."),
+             p(strong("Goal 15: Life on Land:"), 
+               "In the densely populated urban landscape of Rio, the Rioslide project plays a vital role in harmonizing societal and environmental well-being. By pinpointing areas prone to landslides, our project not only aims to protect human communities but also to minimize disruptions to the local ecosystems. Recognizing the interconnectedness of urban and natural environments, especially in a bustling city like Rio, we are committed to informing land management strategies that respect and preserve the urban biodiversity. This mindful approach seeks to ensure that as the city grows and develops, it does so in a way that maintains the ecological harmony essential for the flourishing of both human and natural communities."),
+             p(strong("Goal 16: Peace, Justice and strong institutions:"), 
+               "The Rioslide project is acutely aware of the socio-economic disparities that make the most vulnerable communities disproportionately affected by landslides. Our initiative goes beyond technical mapping; it seeks to address these inequalities by providing equitable solutions in disaster risk management. By enhancing the safety of all sectors within urban areas, particularly those historically underserved, we contribute to reducing inequalities. Ensuring that every community has access to the same level of protection and resources for landslide preparedness not only makes our cities safer but also fosters a more inclusive environment where everyone has the opportunity to thrive."),
+             p(strong("Goal 17: Partnerships for the Goals:"), 
+               "Fostering partnerships to unify researchers, policymakers (from the municipality to the national level), and communities in landslide susceptibility work."),
+             div(style = "text-align: center;", img(src = "SDGs.jpg", height = "500px")),
+             
+             tags$hr(),
              #div(style = "text-align: center;", img(src = "Proj_partners.jpg", height = "100px")),
-             p(strong("Acknowledgement:")),
+             h3(strong("Acknowledgement:")),
              p("While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq) and relates to the process number 234815/2014-0. The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives."),
-             div(style = "text-align: center;", img(src = "CNPq.png", height = "100px")),
+             div(style = "text-align: center;", img(src = "CNPq.png", height = "200px")),
     ),
     
     # Collaborators Tab
@@ -264,6 +292,7 @@ ui <- fluidPage(
     
     tabPanel("Input data overview",
              # Content for the Input data overview tab
+             div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
     ),
     
     tabPanel("A few results",
@@ -273,7 +302,7 @@ ui <- fluidPage(
     
     tabPanel("Cronograma & Development plan",
              # Content for the Input data overview tab
-             #div(style = "text-align: center;", img(src = "SMART.jpg", height = "700px")),
+             div(style = "text-align: center;", img(src = "methods.jpg", height = "700px")),
     ),
     
     
@@ -283,11 +312,11 @@ ui <- fluidPage(
              
              # Repository 1
              h5("Repository 1"),
-             p(a("Link to Repository 1", href = "https://www.example.com/repository1", target = "_blank")),
+             p(a("Oficial project Repository", href = "https://github.com/munizlimap15/PROSLIDE_RIO", target = "_blank")),
              
              # Repository 2
              h5("Repository 2"),
-             p(a("Link to Repository 2", href = "https://www.example.com/repository2", target = "_blank")),
+             p(a("Downloading the Rainfall data", href = "https://github.com/munizlimap15/PluvioDataRio", target = "_blank")),
              
              # Twitter
              h5("Twitter"),
@@ -385,16 +414,27 @@ ui <- fluidPage(
                       
                       tags$ul(
                         tags$li(
-                          HTML('<a href="https://nhess.copernicus.org/articles/23/1483/2023/nhess-23-1483-2023-assets.html" target="_blank">Steger, S., Moreno, M., Crespi, A., Zellner, P. J., Gariano, S. L., Brunetti, M. T., Melillo, M., Peruccacci, S., Marra, F., Kohrs, R., Goetz, J., Mair, V., Pittore, M. (2023). "Deciphering seasonal effects of triggering and preparatory precipitation for improved shallow landslide prediction using generalized additive mixed models." Natural Hazards and Earth System Sciences, 23(4), 1483–1506. DOI: 10.5194/nhess-23-1483-2023.</a>')
+                          HTML('<a href="https://doi.org/10.1016/j.geomorph.2006.03.041" target="_blank">Coelho-Netto, Ana Luiza, André S. Avelar, Manoel C. Fernandes, and Willy A. Lacerda. "Landslide Susceptibility in a Mountainous Geoecosystem, Tijuca Massif, Rio de Janeiro: The Role of Morphometric Subdivision of the Terrain." Geomorphology 87, no. 3 (2007): 120–131. https://doi.org/10.1016/j.geomorph.2006.03.041.</a>')
+                        ),
+                        tags$li(
+                          HTML('<a href="https://doi.org/10.3390/geosciences11100425" target="_blank">Dias, Helen Cristina, Daniel Hölbling, and Carlos Henrique Grohmann. (2021). "Landslide Susceptibility Mapping in Brazil: A Review" Geosciences 11, no. 10: 425. https://doi.org/10.3390/geosciences11100425.</a>')
+                        ),
+                        tags$li(
+                          HTML('<a href="https://climacom.mudancasclimaticas.net.br/o-que-sao-eventos-extremos/">MARCHEZINI, Victor; CUNNINGHAM, Cristopher; DOLIF, Giovanni; CAMARINHA, Pedro Ivo; ODA, Paula; LACERDA, Renato (2023). O que são eventos extremos? Uma reflexão sobre as diferentes perspectivas do termo. ClimaCom – Desastres [online], Campinas, ano 10, nº. 25. nov. 2023.</a>')
                         ),
                         tags$li(
                           HTML('<a href="https://www.sciencedirect.com/science/article/pii/S0048969723077963?via%3Dihub" target="_blank">Moreno, M., Lombardo, L., Crespi, A., Zellner, P.J., Mair, V., Pittore, M., van Westen, C., Steger, S. (2024). "Space-time data-driven modeling of precipitation-induced shallow landslides in South Tyrol, Italy." Science of The Total Environment, Volume 912, Pages 169166. DOI: https://doi.org/10.1016/j.scitotenv.2023.169166.</a>')
                         ),
                         tags$li(
                           HTML('<a href="https://meetingorganizer.copernicus.org/EGU23/EGU23-9538.html" target="_blank">Moreno, M., Steger, S., Lombardo, L., Opitz, T., Crespi, A., Marra, F., de Vugt, L., Zieher, T., Rutzinger, M., Mair, V., Pittore, M., and van Westen, C. (2023). "Functional regression for space-time prediction of precipitation-induced shallow landslides in South Tyrol, Italy." Presented at EGU General Assembly 2023, Vienna, Austria. Abstract ID: EGU23-9538. DOI: https://doi.org/10.5194/egusphere-egu23-9538.</a>')
-                       
-             )))))
+                        ),
+                        tags$li(
+                          HTML('<a href="https://nhess.copernicus.org/articles/23/1483/2023/nhess-23-1483-2023-assets.html" target="_blank">Steger, S., Moreno, M., Crespi, A., Zellner, P. J., Gariano, S. L., Brunetti, M. T., Melillo, M., Peruccacci, S., Marra, F., Kohrs, R., Goetz, J., Mair, V., Pittore, M. (2023). "Deciphering seasonal effects of triggering and preparatory precipitation for improved shallow landslide prediction using generalized additive mixed models." Natural Hazards and Earth System Sciences, 23(4), 1483–1506. DOI: 10.5194/nhess-23-1483-2023.</a>')
+                        )
+             ))))
              
+icon.fa <- makeAwesomeIcon(icon = 'fa-tint', markerColor = 'blue', library='fa')
+
 
 
 server <- function(input, output, session) {
@@ -408,16 +448,20 @@ server <- function(input, output, session) {
     m <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 14)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
-      leaflet.extras::addHeatmap(data = st_coordinates(filtered_data), max = 30, radius = 15, blur = 15) %>%
+      leaflet.extras::addHeatmap(data = st_coordinates(filtered_data), 
+                                 max = 30, radius = 15, blur = 15, group = "Heatmap") %>%
       addCircleMarkers(data = filtered_data, 
                        radius = 1,      # adjust as desired
-                       color = "blue",  # adjust as desired
+                       color = "black",  # adjust as desired
                        stroke = FALSE,  # to remove the border
-                       fillOpacity = .6) %>%
+                       fillOpacity = .6, group = "Landslides") %>%
+      addAwesomeMarkers(data = stations, 
+                       icon=icon.fa, group = "Rain Gauges") %>%
+      
       addProviderTiles(providers$CartoDB.Positron) %>%
       #addProviderTiles(providers$Stadia.StamenToner) %>%
-      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
-      addPolygons(data = Limite_Favelas_2019, color = "red", fillOpacity = 0.1, weight = 1) %>%
+      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3, group = "Study Area") %>%
+      addPolygons(data = Limite_Favelas_2019, color = "red", fillOpacity = 0.1, weight = 1, group = "Favelas") %>%
       
       addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
       addScaleBar() %>%
@@ -433,6 +477,16 @@ server <- function(input, output, session) {
                 labels = "Landslides (# 2998)",  # Legend label
                 opacity = 1,            # Adjust opacity if needed
                 title = "",
+      ) %>%
+      # Add a custom HTML legend for rain gauges
+      addControl(html = '<div style="background: rgba(255, 255, 255, 0.8); padding: 5px;">
+                            <div><i class="fa fa-tint" style="color:blue;"></i> Rain Gauges</div>
+                         </div>',
+                 position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("Base Map"),
+        overlayGroups = c( "Heatmap", "Landslides", "Rain Gauges", "Study Area", "Favelas"),
+        options = layersControlOptions(collapsed = FALSE)
       )
     
     m  # Return the leaflet map
