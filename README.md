@@ -28,9 +28,9 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 Lima P, et al. (2023): PROSLIDE_RIO: Advanced Landslide Risk Management in Rio de Janeiro. [Month] 2023, Rio de Janeiro.-->
 
 **Acknowledgments**:
-- *Rio de Janeiro State Government*; Civil Defense Department
-- *National Institute for Space Research (INPE)*; Center for Earth System Science
-- *Local Communities*; for their invaluable support and cooperation
+- *Rio de Janeiro Municipality Government*;
+- [Pereira Passos Institute](https://www.rio.rj.gov.br/web/ipp/who-we-are)
+- [GeoRio](https://www.rio.rj.gov.br/web/georio/quem-somos)
 
 For more information and updates on the project, please visit [PROSLIDE_RIO](https://pedrohe.shinyapps.io/Shinny_app_RioSlide/).
 
