@@ -7,17 +7,17 @@
     height="300"> 
 </p>
 
-The RioSLIDE project focuses on analyzing and managing landslide risks in Rio de Janeiro. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide local authorities and residents with actionable insights to mitigate risks associated with landslides, especially during extreme weather conditions.
+The RioSLIDE project focuses on analyzing and predicting landslides for the Rio de Janeiro municipality. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide actionable insights to mitigate therats associated with landslides, especially during extreme weather conditions.
 
 **Project Overview**
 
-The initiative builds on previous models and incorporates real-time data analysis to improve the accuracy of landslide predictions. By harnessing the power of modern data analytics, RioSLIDE enables stakeholders to make informed decisions, ensuring the safety and resilience of communities in vulnerable areas.
+The initiative builds on previous models and incorporates historical data analysis to improve the accuracy of landslide predictions. By harnessing the power of modern data analytics, RioSLIDE amis to offer sakeholders informed decisions, ensuring the safety and resilience of communities in vulnerable areas.
 
 **Key Features**
 
-- **Data-Driven Insights**: Leveraging comprehensive geospatial data to pinpoint high-risk areas.
+- **Data-Driven Insights**: Leveraging comprehensive geospatial data to pinpoint high-susceptible areas.
 - **Predictive Modeling**: Utilizing advanced algorithms to forecast potential landslide occurrences.
-- **Community Engagement**: Working closely with local authorities and residents to disseminate information and implement preventive measures.
+
 
 <!--**License**
 
