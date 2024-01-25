@@ -2,7 +2,7 @@
 
 <p align="center">
   <img
-    src="/rioSlide_logo.jpg"
+    src="/Shinny_app_RioSlide/www/rioSlide_logo.jpg"
     width="300"  
     height="300"> 
 </p>
@@ -45,8 +45,8 @@ While this project is currently self-funded and does not receive financial suppo
 <p align="center">
   <img
     src="/Shinny_app_RioSlide/www/CNPq.png"
-    width="300"  
-    height="300"> 
+    width="500"  
+    height="214"> 
 </p>
 
 
