@@ -408,9 +408,11 @@ ui <- fluidPage(
     
     
     
-    tabPanel("Cronograma & Development plan",
+    tabPanel("Timeline & Development plan",
              # Content for the Input data overview tab
-             div(style = "text-align: center;", img(src = "methods.jpg", height = "700px")),
+             div(style = "text-align: center;", 
+                 img(src = "methods.jpg", height = "300px", style = "filter: grayscale(100%);"))
+             ,
     ),
     
     navbarMenu("Outreach and Resources",
