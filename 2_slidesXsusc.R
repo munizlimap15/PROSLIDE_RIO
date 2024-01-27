@@ -9,6 +9,7 @@ library(mapview)
 RJ = sf::st_read("D:/PROslide_RIO/DATA/StudyArea.shp")
 
 pred = raster("D:/PROslide_RIO/Susc_heuristic/suscetibilidade_rio.tif")
+slope <- raster("C:/Users/pedro/Documents/PROslide_RIO/DATA/slope.tif")
 
 # Read the shapefile using sf package
 rioslides <- sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")

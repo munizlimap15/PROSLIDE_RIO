@@ -123,26 +123,57 @@ ui <- fluidPage(
              )
     ),
     
-    # Map and Data Visualization Tab
-    tabPanel("The existing susceptibility map",
-             mainPanel(
-               h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
-               leafletOutput("map2", width = "100%", height = "600px"),
-               p(style = "color: grey; font-size: 80%; text-align: justify;",
-                 "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro...",
-                 a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
-                 " | ",
-                 a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
-               ),
-               div(style = "text-align: center;", img(src = "plot2.png", height = "500px")), # Image
-               div(style = "text-align: left; padding-top: 20px;",
-                   p(style = "color: grey; font-size: 80%; text-align: justify;",
-                     strong("Legend for the plot:"), " ",
-                     HTML(legend_text) # Insert the updated legend text
-                   )
-               )
-             )
-    ),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # # Map and Data Visualization Tab
+    # tabPanel("The existing susceptibility map",
+    #          mainPanel(
+    #            h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
+    #            leafletOutput("map2", width = "100%", height = "600px"),
+    #            p(style = "color: grey; font-size: 80%; text-align: justify;",
+    #              "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro. We have preserved the original color scheme to maintain visual consistency and the interpretive framework of the Prefeitura's study. To enhance rendering performance and user experience, the dataset has been optimized through standard GIS techniques, consistent with the scientific partnership agreement and the data sharing and use policies of the Prefeitura. This optimized dataset adheres to the Creative Commons Attribution 4.0 International License (CC BY 4.0), allowing for sharing and adaptation with proper credit and indication of changes. The data is provided 'as is' without warranty and should be used in accordance with the provided license.",
+    #              a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
+    #              " | ",
+    #              a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
+    #            ),
+    #            div(style = "text-align: center;", img(src = "plot2.png", height = "300px")), # Image
+    #            div(style = "text-align: left; padding-top: 20px;",
+    #                p(style = "color: grey; font-size: 80%; text-align: justify;",
+    #                  strong("Legend for the plot:"), " ",
+    #                  HTML(legend_text) # Insert the updated legend text
+    #                )
+    #            )
+    #          )
+    # ),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
         
