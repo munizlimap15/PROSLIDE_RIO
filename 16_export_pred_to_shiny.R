@@ -30,3 +30,18 @@ if (!is.null(rat) && "suscetibil" %in% colnames(rat)) {
 } else {
   cat("The attribute 'suscetibil' does not exist in the raster data, or the RAT is not properly loaded.")
 }
+
+
+######################################################################
+######################################################################
+######################################################################
+######################################################################
+
+# Read the shapefile using sf package
+rioslides <- sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
+summary(as.factor(rioslides$tipologia1))
+#0    1    2    3    4    5    6    7    8    9   10   11 
+#59 1659   32   25    1  323   55  449   12   71  155  157 
+
+rioslides <- rioslides %>%
+  dplyr::filter(tipologia1 == 1 | tipologia2 == 1 | tipologia3 == 1 | tipologia4 == 1)
