@@ -101,7 +101,7 @@ rioslides   <- merge(rioslides_spdf_extract,   rioslides,   by.x = 'ID', by.y = 
 names(rioslides)[names(rioslides) == "count_"] <- "suscetibilidade_rio"
 # Select only the specified columns using dplyr's select
 rioslides <- dplyr::select(rioslides, suscetibilidade_rio, ID, geometry, year, has_date)
-st_write(rioslides, "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/landslides_2023_with_pred.shp", overwrite= TRUE, append=TRUE)
+st_write(rioslides, "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/landslides_2023_with_pred.shp", overwrite= TRUE, append=TRUE)
 
 rioslides <- rioslides[rioslides$suscetibilidade_rio != 255, ]
 

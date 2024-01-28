@@ -41,6 +41,12 @@ customPalette <- colorFactor(palette = c("red", "#008000", "yellow"),
                              domain = c(1, 2, 3), 
                              na.color = "transparent")
 
+pred2                <- raster("suscetibilidade_DD_rio.tif")
+
+# Generate a custom color palette including a color for NA values
+customPalette2 <- colorFactor(palette = c("#94a8af",  "#d2d2d2", "#b9a88d"), 
+                             domain = c(1, 2, 3), 
+                             na.color = "transparent")
 
 # Ensure LA and MoNEW are in the same CRS
 final_rioslides     <- sf::st_transform(final_rioslides, st_crs(study_area))
@@ -76,6 +82,17 @@ legend_text <- paste(
   sep = ""
 )
 
+legend_text2 <- paste(
+  "This bar chart categorizes 1660 observed landslides according to their susceptibility predictions: ",
+  "Low (Grey): Represents 125 landslides, accounting for 7.53% of the total, situated within areas classified as having low susceptibility to landslides. ",
+  "Medium (Tan): Encompasses 282 landslides, which is 16.99% of the observed data, located in zones of medium susceptibility. ",
+  "High (Blue-Grey): Includes the highest number of landslides, with 1254 occurrences making up 75.48% of the total, found within high susceptibility areas. ",
+  "These figures highlight the critical correlation between higher susceptibility predictions and the observed frequency of landslide events, underlining the importance of accurate susceptibility mapping in landslide-prone regions.",
+  sep = ""
+)
+
+
+
 # Summary<- final_rioslides %>%
 #     dplyr::group_by(ssctbl_)%>%
 #     dplyr::summarise(n_slide = n())
@@ -88,9 +105,17 @@ legend_text <- paste(
 
 ui <- fluidPage(
   theme = bslib::bs_theme(bootswatch = "sandstone"),
+  
   titlePanel("RioSlide - Landslide Susceptibility Map"),
   div(style = "text-align: left;", img(src = "Untitled.jpg", height = "200px")), # Update the image path as needed
   tabsetPanel(
+    
+    tabPanel("Landpage (To be done)",
+             # Content for the Input data overview tab
+             #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
+    ),
+    
+    
     tabPanel("Map and Data",
              sidebarLayout(
                sidebarPanel(width = "0%", height = "0px"),
@@ -140,26 +165,48 @@ ui <- fluidPage(
     
     
     
-    # # Map and Data Visualization Tab
-    # tabPanel("The existing susceptibility map",
-    #          mainPanel(
-    #            h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
-    #            leafletOutput("map2", width = "100%", height = "600px"),
-    #            p(style = "color: grey; font-size: 80%; text-align: justify;",
-    #              "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro. We have preserved the original color scheme to maintain visual consistency and the interpretive framework of the Prefeitura's study. To enhance rendering performance and user experience, the dataset has been optimized through standard GIS techniques, consistent with the scientific partnership agreement and the data sharing and use policies of the Prefeitura. This optimized dataset adheres to the Creative Commons Attribution 4.0 International License (CC BY 4.0), allowing for sharing and adaptation with proper credit and indication of changes. The data is provided 'as is' without warranty and should be used in accordance with the provided license.",
-    #              a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
-    #              " | ",
-    #              a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
-    #            ),
-    #            div(style = "text-align: center;", img(src = "plot2.png", height = "300px")), # Image
-    #            div(style = "text-align: left; padding-top: 20px;",
-    #                p(style = "color: grey; font-size: 80%; text-align: justify;",
-    #                  strong("Legend for the plot:"), " ",
-    #                  HTML(legend_text) # Insert the updated legend text
-    #                )
-    #            )
-    #          )
-    # ),
+    # Map and Data Visualization Tab
+    tabPanel("The existing susceptibility map",
+             mainPanel(
+               h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
+               leafletOutput("map2", width = "100%", height = "600px"),
+               p(style = "color: grey; font-size: 80%; text-align: justify;",
+                 "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro. We have preserved the original color scheme to maintain visual consistency and the interpretive framework of the Prefeitura's study. To enhance rendering performance and user experience, the dataset has been optimized through standard GIS techniques, consistent with the scientific partnership agreement and the data sharing and use policies of the Prefeitura. This optimized dataset adheres to the Creative Commons Attribution 4.0 International License (CC BY 4.0), allowing for sharing and adaptation with proper credit and indication of changes. The data is provided 'as is' without warranty and should be used in accordance with the provided license.",
+                 a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
+                 " | ",
+                 a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
+               ),
+               div(style = "text-align: center;", img(src = "plot2.png", height = "300px")), # Image
+               div(style = "text-align: left; padding-top: 20px;",
+                   p(style = "color: grey; font-size: 80%; text-align: justify;",
+                     strong("Legend for the plot:"), " ",
+                     HTML(legend_text) # Insert the updated legend text
+                   )
+               )
+             )
+    ),
+    
+    
+    
+    
+    # Map and Data Visualization Tab
+    tabPanel("The NEW susceptibility map",
+             mainPanel(
+               h4("Data-driven Landslide Susceptibility Map for Rio de Janeiro"),
+               leafletOutput("map3", width = "100%", height = "600px"),
+               p(style = "color: grey; font-size: 80%; text-align: justify;",
+                 "This interactive map visualizes landslide susceptibility in Rio de Janeiro, as determined by a comprehensive data-driven analysis. The susceptibility classifications have been delineated through a Generalized Additive Model (GAM), accounting for various environmental factors such as topography, land cover, and geological features. The map layers include detailed depictions of susceptible areas, landslide incidents, and favela boundaries."
+               ),
+               
+               div(style = "text-align: center;", img(src = "plottttttt2.png", height = "300px")), # Image
+               div(style = "text-align: left; padding-top: 20px;",
+                   p(style = "color: grey; font-size: 80%; text-align: justify;",
+                     strong("Legend for the plot:"), " ",
+                     HTML(legend_text2) # Insert the updated legend text
+                   )
+               )
+             )
+    ),
     
     
     
@@ -167,7 +214,10 @@ ui <- fluidPage(
     
     
     
-    
+    tabPanel("The landslide susceptibility and the favelas (To be done)",
+             # Content for the Input data overview tab
+             #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
+    ),
     
     
     
@@ -568,6 +618,65 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+  
+
+  output$map <- renderLeaflet({
+    
+    # # Filter the data based on the selected year
+    # filtered_data <- final_rioslides_wgs84 %>%
+    #   filter(anolaudo >= input$yearSlider[1], anolaudo <= input$yearSlider[2])
+    # 
+    # Your leaflet code, but use 'filtered_data' for the heatmap and markers
+    m <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 13)) %>%
+      addTiles() %>%
+      leafem::addMouseCoordinates() %>%
+      leaflet.extras::addHeatmap(data = st_coordinates(final_rioslides_wgs84), 
+                                 max = 30, radius = 10, blur = 10, group = "Heatmap") %>%
+      addCircleMarkers(data = final_rioslides_wgs84, 
+                       radius = 1,      # adjust as desired
+                       color = "black",  # adjust as desired
+                       stroke = FALSE,  # to remove the border
+                       fillOpacity = .6, group = "Landslides") %>%
+      addCircleMarkers(data = stations, 
+                       radius = 6,      # adjust as desired
+                       color = "blue",  # adjust as desired
+                       stroke = FALSE,  # to remove the border
+                       fillOpacity = .6, group = "Rain Gauges") %>%
+      
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      #addProviderTiles(providers$Stadia.StamenToner) %>%
+      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3, group = "Study Area") %>%
+      addPolygons(data = Limite_Favelas_2019, color = "red", fillOpacity = 0.1, weight = 1, group = "Favelas") %>%
+      
+      addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
+      addScaleBar() %>%
+      addLegend(position = "bottomright",  # Adjust position as desired
+                colors = "red",            # Color to represent in the legend
+                labels = "Favelas", # Legend label
+                opacity = 1,                # Adjust opacity if needed
+                title = ""      # Legend title
+      )%>%
+      
+      # Add a custom HTML legend for rain gauges
+      addControl(html = '<div style="background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                            <div><span style="height:12px; width:12px; background-color:blue; border-radius:50%; display:inline-block; margin-right:5px;"></span>Rain Gauges  (# 33)</div>
+                         </div>',
+                 position = "bottomright") %>%
+      addControl(html = '<div style="background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                            <div><span style="height:12px; width:12px; background-color:black; border-radius:50%; display:inline-block; margin-right:5px;"></span>Landslides (# 1660)</div>
+                         </div>',
+                 position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("Base Map"),
+        overlayGroups = c( "Heatmap", "Landslides", "Rain Gauges", "Study Area", "Favelas"),
+        options = layersControlOptions(collapsed = FALSE)
+      )
+    
+    m  # Return the leaflet map
+  })
+  ##############################################################################
+  ##############################################################################
+  ##############################################################################
   output$map2 <- renderLeaflet({
     
     
@@ -612,60 +721,48 @@ server <- function(input, output, session) {
   ##############################################################################
   ##############################################################################
   ##############################################################################
-  output$map <- renderLeaflet({
+  output$map3 <- renderLeaflet({
     
-    # # Filter the data based on the selected year
-    # filtered_data <- final_rioslides_wgs84 %>%
-    #   filter(anolaudo >= input$yearSlider[1], anolaudo <= input$yearSlider[2])
-    # 
+    
+    
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 13)) %>%
+    m3 <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 13)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
-      leaflet.extras::addHeatmap(data = st_coordinates(final_rioslides_wgs84), 
-                                 max = 40, radius = 10, blur = 10, group = "Heatmap") %>%
+      
       addCircleMarkers(data = final_rioslides_wgs84, 
-                       radius = 1,      # adjust as desired
-                       color = "black",  # adjust as desired
-                       stroke = FALSE,  # to remove the border
+                       radius = 1,      
+                       color = "black",  
+                       stroke = FALSE,  
                        fillOpacity = .6, group = "Landslides") %>%
-      addCircleMarkers(data = stations, 
-                       radius = 6,      # adjust as desired
-                       color = "blue",  # adjust as desired
-                       stroke = FALSE,  # to remove the border
-                       fillOpacity = .6, group = "Rain Gauges") %>%
       
+      addRasterImage(as.factor(pred2), colors = customPalette2, opacity = .6, group = "Susceptibility") %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      #addProviderTiles(providers$Stadia.StamenToner) %>%
-      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3, group = "Study Area") %>%
+      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
       addPolygons(data = Limite_Favelas_2019, color = "red", fillOpacity = 0.1, weight = 1, group = "Favelas") %>%
-      
       addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
       addScaleBar() %>%
-      addLegend(position = "bottomright",  # Adjust position as desired
-                colors = "red",            # Color to represent in the legend
-                labels = "Favelas", # Legend label
-                opacity = 1,                # Adjust opacity if needed
-                title = ""      # Legend title
-      )%>%
       
-      # Add a custom HTML legend for rain gauges
-      addControl(html = '<div style="background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
-                            <div><span style="height:12px; width:12px; background-color:blue; border-radius:50%; display:inline-block; margin-right:5px;"></span>Rain Gauges  (# 33)</div>
-                         </div>',
-                 position = "bottomright") %>%
+      addLegend(position = "bottomright", 
+                colors = "red",            
+                labels = "Favelas", 
+                opacity = 1,                
+                title = "") %>%
+      
       addControl(html = '<div style="background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
                             <div><span style="height:12px; width:12px; background-color:black; border-radius:50%; display:inline-block; margin-right:5px;"></span>Landslides (# 1660)</div>
                          </div>',
                  position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("Base Map"),
-        overlayGroups = c( "Heatmap", "Landslides", "Rain Gauges", "Study Area", "Favelas"),
+        overlayGroups = c("Landslides", "Susceptibility", "Favelas"),
         options = layersControlOptions(collapsed = FALSE)
       )
     
-    m  # Return the leaflet map
+    m3  # Return the leaflet map
+    
   })
+  
 }
 
 # Run the application 
