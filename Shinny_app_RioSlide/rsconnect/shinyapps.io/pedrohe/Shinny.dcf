@@ -5,8 +5,9 @@ account: pedrohe
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10984122
-bundleId: 8167955
+bundleId: 8234257
 url: https://pedrohe.shinyapps.io/Shinny/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: .RData|write-test-3e1d7e34-efab-4a60-92b3-7a71fabe8c54

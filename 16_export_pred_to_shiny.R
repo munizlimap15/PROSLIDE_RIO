@@ -24,7 +24,7 @@ if (!is.null(rat) && "suscetibil" %in% colnames(rat)) {
   # Set names, crs, and other properties if needed
   names(pred_factor) <- "suscetibil"
   crs(pred_factor) <- crs(pred)
-  pred_factor <- aggregate(pred_factor, fact=7, fun=modal)
+  pred_factor <- aggregate(pred_factor, fact=10, fun=modal)
   pred_factor <- mask(pred_factor, study_area)
   # Save the raster with 'suscetibil' categories
   writeRaster(pred_factor, filename="D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/suscetibilidade_rio.tif", format="GTiff", overwrite=TRUE)
@@ -63,7 +63,7 @@ if (!is.null(rat) && "suscetibil" %in% colnames(rat)) {
   # Set names, crs, and other properties if needed
   names(pred2_factor) <- "suscetibil"
   crs(pred2_factor) <- crs(pred2)
-  pred2_factor <- aggregate(pred2_factor, fact=7, fun=modal)
+  pred2_factor <- aggregate(pred2_factor, fact=10, fun=modal)
   pred2_factor <- mask(pred2_factor, study_area)
   # Save the raster with 'suscetibil' categories
   writeRaster(pred2_factor, filename="D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/suscetibilidade_DD_rio.tif", format="GTiff", overwrite=TRUE)

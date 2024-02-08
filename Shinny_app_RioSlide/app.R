@@ -33,6 +33,7 @@ library(raster)
 final_rioslides     <- st_read("landslides_2023_with_pred.shp")#landslides_2023.shp
 study_area          <- st_read("StudyArea.shp")
 Limite_Favelas_2019 <- st_read("Limite_Favelas_2019.shp")
+Limite_Favelas_2019 <- st_simplify(Limite_Favelas_2019, dTolerance = 10)
 stations            <- st_read("stations.shp")
 pred                <- raster("suscetibilidade_rio.tif")
 
@@ -48,7 +49,7 @@ customPalette2 <- colorFactor(palette = c("#94a8af",  "#d2d2d2", "#b9a88d"),
                              domain = c(1, 2, 3), 
                              na.color = "transparent")
 
-# Ensure LA and MoNEW are in the same CRS
+# Ensure the same CRS
 final_rioslides     <- sf::st_transform(final_rioslides, st_crs(study_area))
 Limite_Favelas_2019 <- sf::st_transform(Limite_Favelas_2019, st_crs(study_area))
 stations            <- sf::st_transform(stations, st_crs(study_area))
@@ -106,14 +107,14 @@ legend_text2 <- paste(
 ui <- fluidPage(
   theme = bslib::bs_theme(bootswatch = "sandstone"),
   
-  titlePanel("RioSlide - Landslide Susceptibility Map"),
-  div(style = "text-align: left;", img(src = "Untitled.jpg", height = "200px")), # Update the image path as needed
+  titlePanel("RioSlide"),
+  div(style = "text-align: left;", img(src = "Untitled.jpg", height = "300px")), # Update the image path as needed
   tabsetPanel(
     
-    tabPanel("Landpage (To be done)",
+    #tabPanel("Landpage (To be done)",
              # Content for the Input data overview tab
              #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
-    ),
+    #),
     
     
     tabPanel("Map and Data",
@@ -153,13 +154,410 @@ ui <- fluidPage(
     
     
     
+    tabPanel("Rio's Landslide History",
+             fluidRow(
+               column(12,
+                      h4("Overview of Rio's Landslide History"),
+                      p("This section delves into the history of landslides in Rio de Janeiro, highlighting the 50 most significant geological-geotechnical incidents documented between 1966 and 2016. The compilation provides insight into the recurring challenges faced by the city due to its unique topographical and climatic conditions. The report, compiled by the Alerta Rio system, serves as a crucial resource for understanding the patterns and impacts of these devastating events.",
+                        style = "font-size: 90%;"),
+                      p(a("Access the full report here", href="http://www.sistema-alerta-rio.com.br/wp-content/uploads/2016/12/PDF_ESTRUTURA-DO-LIVRETO_50-MAIORES-ACIDENTES-A5.pdf", target="_blank"),
+                        style = "font-size: 90%;"),
+                      tags$hr(),
+                      h5("Featured Incidents", style = "font-size: 110%;"),
+                      
+                      
+                      tags$div(
+                        style = "display: flex; flex-wrap: wrap; justify-content: space-between;",
+                        
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "6.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 1 - RUA SANTO AMARO", style = "font-weight: bold;"),
+                          p("Location: Rua Santo Amaro, Santa Teresa neighborhood.", style = "font-size: 80%;"),
+                          p("Date: January 15, 1966", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide in talus/colluvium followed by the flow of the same material, which reached the head of a large amphitheater and traveled a distance of more than 200m in the valley.", style = "font-size: 80%;"),
+                          p("Main Consequences: Destruction of 7 houses and 70 fatalities.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "12.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 4 - RUA BELISÁRIO TÁVORA", style = "font-weight: bold;"),
+                          p("Location: Ruas Belisário Távora and General Glicério, Laranjeiras.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1967", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of residual soil on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: The landslide obstructed two streets, caused the destruction of a house and two buildings, and resulted in 119 fatalities. This event was pivotal and contributed to the strengthening of the GEO-RIO (Fundação Instituto de Geotécnica do Município do Rio de Janeiro).", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "13.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 4 - RUA BELISÁRIO TÁVORA", style = "font-weight: bold;"),
+                          p("Location: Ruas Belisário Távora and General Glicério, Laranjeiras.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1967", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of residual soil on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: The landslide obstructed two streets, caused the destruction of a house and two buildings, and resulted in 119 fatalities. This event was pivotal and contributed to the strengthening of the GEO-RIO (Fundação Instituto de Geotécnica do Município do Rio de Janeiro).", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "22.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 8 - RUA NAVARRO", style = "font-weight: bold;"),
+                          p("Location: Rua Navarro, Botafogo.", style = "font-size: 80%;"),
+                          p("Date: March 20, 1983", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of soil, waste, and debris on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: The landslide struck two buildings - a three-story building and a two-story building - located on Navarro Street, resulting in two fatalities. Additionally, several buildings on the same street were evacuated.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "24.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 9 - MORRO PAVÃO-PAVÃOZINHO", style = "font-weight: bold;"),
+                          p("Location: Morro Pavão Pavãozinho, Copacabana neighborhood.", style = "font-size: 80%;"),
+                          p("Date: December 25, 1983", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of waste on a slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: The incident resulted in the death of 19 people and the destruction of several buildings in the community.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "28.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 11 - MORRO DO SÃO CARLOS", style = "font-weight: bold;"),
+                          p("Location: São Carlos community, Estácio neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between March 6 and 8, 1986", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of waste and debris.", style = "font-size: 80%;"),
+                          p("Main Consequences: The incident resulted in the death of 9 people in the community.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "30.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 12 - MORRO DA FORMIGA", style = "font-weight: bold;"),
+                          p("Location: Formiga community, Tijuca neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 6, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of soil and rock blocks.", style = "font-size: 80%;"),
+                          p("Main Consequences: The incident resulted in the death of 7 people in the community.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "32.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 13 - COMUNIDADE SANTA MARTA", style = "font-weight: bold;"),
+                          p("Location: Santa Marta community, Botafogo neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 12, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of soil and garbage deposit with a thickness of 4 meters and an approximate volume of 5,000 m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The landslide caused the destruction of around 30 houses, resulting in 6 deaths, 40 injuries, and 300 displaced individuals. Additionally, there are reports of a rupture in a screen used in a containment work due to the weight of the garbage and mud accumulated during a week of heavy rains.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "34.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 14 - MORRO DO BOREL", style = "font-weight: bold;"),
+                          p("Location: Morro do Borel, Tijuca neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between February 18 and 21, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Several soil landslides caused by heavy rain affecting the community.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to causing significant collapses and numerous deaths, there were also the closure of several houses and shacks, leaving a large number of displaced individuals.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "35.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 14 - MORRO DO BOREL", style = "font-weight: bold;"),
+                          p("Location: Morro do Borel, Tijuca neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between February 18 and 21, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Several soil landslides caused by heavy rain affecting the community.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to causing significant collapses and numerous deaths, there were also the closure of several houses and shacks, leaving a large number of displaced individuals.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "38.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 15 - ESTRADA DOM JOAQUIM MAMEDE (CLÍNICA SANTA GENOVEVA)", style = "font-weight: bold;"),
+                          p("Location: Estrada Dom Joaquim Mamede (Santa Genoveva geriatric clinic), Santa Teresa neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Soil and rock block landslide on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to destroying part of the health facility building, the incident resulted in the death of 21 individuals who were in the clinic.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "40.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 16 - PARQUE LICURGO", style = "font-weight: bold;"),
+                          p("Location: Parque Licurgo community, located on Licurgo Street, in the Serra da Misericórdia, Madureira neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Large-scale planar landslide on residual granite-gneiss soil on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: Although it did not result in any fatalities, the landslide caused the destruction of approximately 30 houses.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "43.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 17 - ESTRADA DA GÁVEA (ROCINHA)", style = "font-weight: bold;"),
+                          p("Location: Estrada da Gávea, located in the Rocinha community, in the South Zone of the city.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Multiple soil landslides caused by heavy rains in the region.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to destroying several dwellings, the landslides affected the Integrated Center of Public Education (CIEP) of Rocinha, which was in the final stages of construction and equipment installation, and destroyed and obstructed part of the Estrada da Gávea.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "45.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 18 - ESTRADA DA VISTA CHINESA", style = "font-weight: bold;"),
+                          p("Location: Estrada da Vista Chinesa, near the viewpoint in the Tijuca Forest, in the Alto da Boa Vista neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 20, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide on a slope cut by the Estrada da Vista Chinesa, within the Tijuca Forest area, during a heavy rainfall event where a rainfall index of 456.6mm/4 days was recorded. Approximately 16,000m³ of soil and vegetation were mobilized.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to destroying and obstructing both lanes of the Estrada da Vista Chinesa, the occurrence caused disruptions to the drainage system in the neighborhoods of Jardim Botânico and Gávea.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "50.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 20 - AVENIDA NIEMEYER", style = "font-weight: bold;"),
+                          p("Location: Avenida Niemeyer, in the Vidigal neighborhood, in the southern zone of the city.", style = "font-size: 80%;"),
+                          p("Date: June 2, 1993", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Planar landslide of a thin layer of soil over a rocky massif.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident resulted in 3 fatalities and the closure of the aforementioned avenue for several days, as well as the destruction of homes and a containment structure (anchored curtain).", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "52.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 21 - UNDERBERG (RUA JOÃO BATISTA SEQUEIRA)", style = "font-weight: bold;"),
+                          p("Location: Locality known as Travessa do Alemão, in the Alto da Boa Vista neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 13, 1996", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Mass movement with an estimated volume of 10,000m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident, although not resulting in fatalities, left one house completely destroyed, two damaged, and a road obstructed by a mixture of trees, boulders, pebbles, and sandy sediments with silt and clay.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "58.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 24 - COMUNIDADE SÍTIO PAI JOÃO", style = "font-weight: bold;"),
+                          p("Location: Community Sítio Pai João, in the Itanhangá neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 13, 1996", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Debris flow, consisting of soil, blocks, and gneiss boulders with an approximate volume of 9,000m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident resulted in damage to water, electricity, and telephone networks, along with 20 fatalities, 170 displaced families, 20 destroyed houses, 25 houses condemned, and a blocked road.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "60.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 25 - SOBRADINHO, MORRO DO VIDIGAL", style = "font-weight: bold;"),
+                          p("Location: Sector known as Sobradinho, in Morro do Vidigal, located in the Vidigal neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 13, 1996", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Planar landslide of soil at the soil-rock contact.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to the destruction of 7 houses and displacing 20 people, the event resulted in the death of 7 children and left 33 people injured.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "61.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 26 - RUA DIONÉIA, ROCINHA", style = "font-weight: bold;"),
+                          p("Location: Rua Dionéia, number 200, in the Rocinha neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 13, 1996", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Planar landslide of soil with an approximate volume of 800m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The incident resulted in the destruction of homes, the death of 4 people, and left 3 severely injured.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "83.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 35 - ESTRADA DA BOIÚNA", style = "font-weight: bold;"),
+                          p("Location: Along the Estrada da Boiúna, in the Taquara neighborhood, in the western zone of the municipality.", style = "font-size: 80%;"),
+                          p("Date: February 14, 1996", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Landslides of thick layers of colluvium with more than 1,000m³ of material, including soil, debris, and medium to large-sized trees.", style = "font-size: 80%;"),
+                          p("Main Consequences: The incident affected homes and blocked traffic on the road with a large volume of material. Due to the risk of further landslides, some houses were evacuated as a safety measure.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "87.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 37 - REBOUÇAS TUNNEL", style = "font-weight: bold;"),
+                          p("Location: Between the North and South galleries of the Rebouças Tunnel on the Lagoa-bound lane, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
+                          p("Date: October 23, 2007", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of about 3 tons of soil from a slope near Morro Cerro-Corá, in the Cosme Velho neighborhood. The accident began with the rupture of a pipeline located upstream of the tunnel galleries, and about 1 hour later, the situation worsened due to rainfall.", style = "font-size: 80%;"),
+                          p("Main Consequences: It caused significant disruptions to traffic flow in the city of Rio de Janeiro with the closure of both lanes of the Rebouças Tunnel for several days.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "90.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 38 - ENGENHEIRO GAMA LOBO STREET", style = "font-weight: bold;"),
+                          p("Location: Upslope from the Jardim Vila Isabel residential condominium located at Rua Engenheiro Gama Lobo, No. 650, in the Vila Isabel neighborhood.", style = "font-size: 80%;"),
+                          p("Date: June 18, 2009", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Disintegration of the face of an old quarry, inactive for 50 years, with an approximate volume between 6,000m³ and 8,000m³ of rocks and soil.", style = "font-size: 80%;"),
+                          p("Main Consequences: Partial destruction of 6 residences, closure of 10 residences and 3 streets in the condominium, burial of at least 12 cars resulting in 4 injuries and 1 fatality. Additionally, the housing complex was closed for months.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "93.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 39 - GROTA FUNDA ROAD", style = "font-weight: bold;"),
+                          p("Location: Grota Funda Road, in the Guaratiba neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between April 5th and 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Widespread planar landslides of soil.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident led to the total closure of the road for several days.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "95.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 40 - GUARARAPES COMMUNITY", style = "font-weight: bold;"),
+                          p("Location: Guararapes Community, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between April 5th and 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Multiple landslides of soil and cutting slope failures with a total volume of approximately 500m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident led to the destruction of some houses and the death of 4 people in the Guararapes community.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "98.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 41 - MORRO DOS PRAZERES", style = "font-weight: bold;"),
+                          p("Location: Morro dos Prazeres Community, in the Santa Teresa neighborhood.", style = "font-size: 80%;"),
+                          p("Date: Between April 5th and 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of residual soil and debris with a mobilized volume estimated at 500m³.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident resulted in 30 fatalities, destruction of residences, and blockage of passages in the community.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "105.jpg", style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 45 - LABORIAUX (ROCINHA)", style = "font-weight: bold;"),
+                          p("Location: Laboriaux area, in the Rocinha community.", style = "font-size: 80%;"),
+                          p("Date: Between April 5th and 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Planar landslide of soil.", style = "font-size: 80%;"),
+                          p("Main Consequences: The accident resulted in the collapse of the dividing walls of buildings downstream of the slope and the burial of internal yards and garages.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "108.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 46 - RUA ITAPIRÚ", style = "font-weight: bold;"),
+                          p("Location: Rua Itapirú, in the Catumbi neighborhood.", style = "font-size: 80%;"),
+                          p("Date: April 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of soil and garbage totaling more than 100m³ thrown by the Mineira Community in a slope area where downstream there are several houses or empty lots facing Rua Itapirú.", style = "font-size: 80%;"),
+                          p("Main Consequences: The landslide hit an empty lot, adjacent to and after number 650 of Rua Itapirú, also reaching this street and the houses behind the mentioned address, invading them. As a safety measure, 3 houses were condemned.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "111.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 47 - LADEIRA DO ASCURRA", style = "font-weight: bold;"),
+                          p("Location: Ladeira do Ascurra, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
+                          p("Date: April 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class I", style = "font-size: 80%;"),
+                          p("Occurrence: Large-scale landslides (with more than 500m³) that hit houses downstream and a 3-story building located on Ladeira do Ascurra.", style = "font-size: 80%;"),
+                          p("Main Consequences: The damage was more pronounced in the house downstream, which had the first floor completely affected by the landslide. Along with the sliding material, there was a fall of large trees causing the rupture of the containment works (stone wall reinforced with columns and concrete beams) that hit the house's roof.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        
+                        tags$div(
+                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          img(src = "117.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 49 - ESTRADA DO RIO JEQUIÁ", style = "font-weight: bold;"),
+                          p("Location: Estrada do Rio Jequiá, on Ilha do Governador.", style = "font-size: 80%;"),
+                          p("Date: April 6th, 2010", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Landslide of soil and vegetation with a volume of 1,500m³, triggered by heavy rain, hitting several houses and putting others at risk.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to causing one fatality, the accident resulted in 3 injuries, 36 affected houses, 21 interdictions, and a demolition request after inspection by specialized technicians.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                      ),
+                      p("The images above exemplify the severe impact landslides have on urban areas in Rio, causing not only substantial property damage but also loss of life. These cases underscore the necessity for ongoing research, improved risk management strategies, and community preparedness to mitigate future landslide risks.",
+                        style = "font-size: 90%;"),
+                      p("The rights to the figures belong to the Alerta Rio system. Source: ", a("http://www.sistema-alerta-rio.com.br/wp-content/uploads/2016/12/PDF_ESTRUTURA-DO-LIVRETO_50-MAIORES-ACIDENTES-A5.pdf", href = "http://www.sistema-alerta-rio.com.br/wp-content/uploads/2016/12/PDF_ESTRUTURA-DO-LIVRETO_50-MAIORES-ACIDENTES-A5.pdf", target="_blank"), style = "font-size: 90%;")
+               )
+             )
+    ),
     
     
     
     
-    
-    
-    
+ 
     
     
     
@@ -214,7 +612,11 @@ ui <- fluidPage(
     
     
     
-    tabPanel("The landslide susceptibility and the favelas (To be done)",
+    tabPanel("Landslide and the favelas",
+             p("In the study area, approximately 4.06% is covered by favelas. Within these favelas, there are 587 landslides."),
+             p("The official model presents the following distribution of susceptibility across the favelas: It categorizes 45% of the area as low susceptibility, 35% as medium, and 20% as high susceptibility. In terms of landslide occurrence, this model identified 10 landslides in low susceptibility areas, 186 in medium susceptibility areas, and 391 in regions deemed to have high susceptibility."),
+             p("In contrast, the Data-driven model shows a different pattern in its assessment of landslide susceptibility. It classifies 32% of the favela areas as low susceptibility, 16% as medium, and 51% as high susceptible. Corresponding to this model’s predictions, 3 landslides were observed in areas of low susceptibility, 20 in medium susceptibility areas, and 564 landslides in high susceptibility zones."),
+             
              # Content for the Input data overview tab
              #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
     ),
@@ -233,8 +635,10 @@ ui <- fluidPage(
              div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
     ),
     
-    tabPanel("Conceptual Projections",
+    tabPanel("Dynamic Mapping Examples",
              # Content for the Input data overview tab
+             p("The animations displayed below serve as educational references to demonstrate the concept of dynamic landslide susceptibility mapping. These visualizations are exemplary of the type of analyses that can be performed to understand how susceptibility to landslides can change under various environmental conditions, particularly in response to different precipitation events. The animations are sourced from external studies and are utilized here to provide a visual context for similar analyses that might be conducted within this research. They are included to aid in the comprehension of the methodologies and results that dynamic susceptibility mapping can yield, and should not be mistaken for the original output of the current project."),
+             
              div(style = "text-align: center; width: 800px; margin: auto;",  # Set the width to match the image and center the container
                  img(src = "Animation_B.gif", height = "800px"),
                  # Adding credits for the image with a hyperlink
@@ -246,7 +650,16 @@ ui <- fluidPage(
                    a(href = "https://www.mountainresearch.at/proslide/", 
                      "https://www.mountainresearch.at/proslide/", 
                      target = "_blank")
+                 ),
+                 
+                 img(src = "moreno_2023.gif", height = "800px"),
+                 p(style = "color: grey; font-size: 80%; text-align: justify;",
+                   strong("Image credits:"), " Moreno, M. et al. (2024). This image illustrates the space-time data-driven modeling of precipitation-induced shallow landslides in South Tyrol, Italy. For more details, please check: ",
+                   a(href = "https://www.sciencedirect.com/science/article/pii/S0048969723077963", 
+                     "Science of The Total Environment, Moreno et al. (2024)", 
+                     target = "_blank")
                  )
+                 
              ),
     ),
     
@@ -612,8 +1025,6 @@ ui <- fluidPage(
     
     
              ))
-             
-#icon.fa <- makeAwesomeIcon(icon = 'fa-tint', markerColor = 'blue', library='fa')
 
 
 
@@ -627,7 +1038,7 @@ server <- function(input, output, session) {
     #   filter(anolaudo >= input$yearSlider[1], anolaudo <= input$yearSlider[2])
     # 
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 13)) %>%
+    m <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 12)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
       leaflet.extras::addHeatmap(data = st_coordinates(final_rioslides_wgs84), 
@@ -674,6 +1085,7 @@ server <- function(input, output, session) {
     
     m  # Return the leaflet map
   })
+  
   ##############################################################################
   ##############################################################################
   ##############################################################################
@@ -682,7 +1094,7 @@ server <- function(input, output, session) {
     
     
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m2 <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 13)) %>%
+    m2 <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 12)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
       
@@ -726,7 +1138,7 @@ server <- function(input, output, session) {
     
     
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m3 <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 13)) %>%
+    m3 <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 12)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
       
