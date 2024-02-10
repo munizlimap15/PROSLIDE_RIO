@@ -167,12 +167,12 @@ ui <- fluidPage(
                       
                       
                       tags$div(
-                        style = "display: flex; flex-wrap: wrap; justify-content: space-between;",
+                        style = "display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); grid-gap: 10px; align-items: start;",
                         
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "6.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 1 - RUA SANTO AMARO", style = "font-weight: bold;"),
                           p("Location: Rua Santo Amaro, Santa Teresa neighborhood.", style = "font-size: 80%;"),
@@ -185,7 +185,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "12.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 4 - RUA BELISÁRIO TÁVORA", style = "font-weight: bold;"),
                           p("Location: Ruas Belisário Távora and General Glicério, Laranjeiras.", style = "font-size: 80%;"),
@@ -197,7 +197,7 @@ ui <- fluidPage(
                         ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "13.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 4 - RUA BELISÁRIO TÁVORA", style = "font-weight: bold;"),
                           p("Location: Ruas Belisário Távora and General Glicério, Laranjeiras.", style = "font-size: 80%;"),
@@ -211,7 +211,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "22.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 8 - RUA NAVARRO", style = "font-weight: bold;"),
                           p("Location: Rua Navarro, Botafogo.", style = "font-size: 80%;"),
@@ -227,7 +227,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "24.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 9 - MORRO PAVÃO-PAVÃOZINHO", style = "font-weight: bold;"),
                           p("Location: Morro Pavão Pavãozinho, Copacabana neighborhood.", style = "font-size: 80%;"),
@@ -240,7 +240,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "28.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 11 - MORRO DO SÃO CARLOS", style = "font-weight: bold;"),
                           p("Location: São Carlos community, Estácio neighborhood.", style = "font-size: 80%;"),
@@ -254,7 +254,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "30.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 12 - MORRO DA FORMIGA", style = "font-weight: bold;"),
                           p("Location: Formiga community, Tijuca neighborhood.", style = "font-size: 80%;"),
@@ -267,7 +267,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "32.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 13 - COMUNIDADE SANTA MARTA", style = "font-weight: bold;"),
                           p("Location: Santa Marta community, Botafogo neighborhood.", style = "font-size: 80%;"),
@@ -280,7 +280,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "34.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 14 - MORRO DO BOREL", style = "font-weight: bold;"),
                           p("Location: Morro do Borel, Tijuca neighborhood.", style = "font-size: 80%;"),
@@ -293,7 +293,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "35.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 14 - MORRO DO BOREL", style = "font-weight: bold;"),
                           p("Location: Morro do Borel, Tijuca neighborhood.", style = "font-size: 80%;"),
@@ -306,32 +306,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
-                          img(src = "38.jpg",  style = "width: 100%;"),  # Image fills the container width
-                          h6("Incident Nº 15 - ESTRADA DOM JOAQUIM MAMEDE (CLÍNICA SANTA GENOVEVA)", style = "font-weight: bold;"),
-                          p("Location: Estrada Dom Joaquim Mamede (Santa Genoveva geriatric clinic), Santa Teresa neighborhood.", style = "font-size: 80%;"),
-                          p("Date: February 19, 1988", style = "font-size: 80%;"),
-                          p("Magnitude: Class III", style = "font-size: 80%;"),
-                          p("Occurrence: Soil and rock block landslide on a natural slope.", style = "font-size: 80%;"),
-                          p("Main Consequences: In addition to destroying part of the health facility building, the incident resulted in the death of 21 individuals who were in the clinic.", style = "font-size: 80%;"),
-                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
-                        ),
-                        
-                        tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
-                          img(src = "40.jpg",  style = "width: 100%;"),  # Image fills the container width
-                          h6("Incident Nº 16 - PARQUE LICURGO", style = "font-weight: bold;"),
-                          p("Location: Parque Licurgo community, located on Licurgo Street, in the Serra da Misericórdia, Madureira neighborhood.", style = "font-size: 80%;"),
-                          p("Date: February 19, 1988", style = "font-size: 80%;"),
-                          p("Magnitude: Class II", style = "font-size: 80%;"),
-                          p("Occurrence: Large-scale planar landslide on residual granite-gneiss soil on a natural slope.", style = "font-size: 80%;"),
-                          p("Main Consequences: Although it did not result in any fatalities, the landslide caused the destruction of approximately 30 houses.", style = "font-size: 80%;"),
-                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
-                        ),
-                        
-                        
-                        tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "43.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 17 - ESTRADA DA GÁVEA (ROCINHA)", style = "font-weight: bold;"),
                           p("Location: Estrada da Gávea, located in the Rocinha community, in the South Zone of the city.", style = "font-size: 80%;"),
@@ -344,7 +319,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "45.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 18 - ESTRADA DA VISTA CHINESA", style = "font-weight: bold;"),
                           p("Location: Estrada da Vista Chinesa, near the viewpoint in the Tijuca Forest, in the Alto da Boa Vista neighborhood.", style = "font-size: 80%;"),
@@ -355,9 +330,32 @@ ui <- fluidPage(
                           style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
                         ),
                         
+                        tags$div(
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
+                          img(src = "38.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 15 - ESTRADA DOM JOAQUIM MAMEDE (CLÍNICA SANTA GENOVEVA)", style = "font-weight: bold;"),
+                          p("Location: Estrada Dom Joaquim Mamede (Santa Genoveva geriatric clinic), Santa Teresa neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class III", style = "font-size: 80%;"),
+                          p("Occurrence: Soil and rock block landslide on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: In addition to destroying part of the health facility building, the incident resulted in the death of 21 individuals who were in the clinic.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
+                          img(src = "40.jpg",  style = "width: 100%;"),  # Image fills the container width
+                          h6("Incident Nº 16 - PARQUE LICURGO", style = "font-weight: bold;"),
+                          p("Location: Parque Licurgo community, located on Licurgo Street, in the Serra da Misericórdia, Madureira neighborhood.", style = "font-size: 80%;"),
+                          p("Date: February 19, 1988", style = "font-size: 80%;"),
+                          p("Magnitude: Class II", style = "font-size: 80%;"),
+                          p("Occurrence: Large-scale planar landslide on residual granite-gneiss soil on a natural slope.", style = "font-size: 80%;"),
+                          p("Main Consequences: Although it did not result in any fatalities, the landslide caused the destruction of approximately 30 houses.", style = "font-size: 80%;"),
+                          style = "text-align: left; padding-left: 10px;"  # Align text to the left with some padding
+                        ),
+                        
+                        tags$div(
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "50.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 20 - AVENIDA NIEMEYER", style = "font-weight: bold;"),
                           p("Location: Avenida Niemeyer, in the Vidigal neighborhood, in the southern zone of the city.", style = "font-size: 80%;"),
@@ -369,7 +367,7 @@ ui <- fluidPage(
                         ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "52.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 21 - UNDERBERG (RUA JOÃO BATISTA SEQUEIRA)", style = "font-weight: bold;"),
                           p("Location: Locality known as Travessa do Alemão, in the Alto da Boa Vista neighborhood.", style = "font-size: 80%;"),
@@ -382,7 +380,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "58.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 24 - COMUNIDADE SÍTIO PAI JOÃO", style = "font-weight: bold;"),
                           p("Location: Community Sítio Pai João, in the Itanhangá neighborhood.", style = "font-size: 80%;"),
@@ -395,7 +393,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "60.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 25 - SOBRADINHO, MORRO DO VIDIGAL", style = "font-weight: bold;"),
                           p("Location: Sector known as Sobradinho, in Morro do Vidigal, located in the Vidigal neighborhood.", style = "font-size: 80%;"),
@@ -408,7 +406,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "61.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 26 - RUA DIONÉIA, ROCINHA", style = "font-weight: bold;"),
                           p("Location: Rua Dionéia, number 200, in the Rocinha neighborhood.", style = "font-size: 80%;"),
@@ -421,7 +419,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "83.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 35 - ESTRADA DA BOIÚNA", style = "font-weight: bold;"),
                           p("Location: Along the Estrada da Boiúna, in the Taquara neighborhood, in the western zone of the municipality.", style = "font-size: 80%;"),
@@ -434,7 +432,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "87.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 37 - REBOUÇAS TUNNEL", style = "font-weight: bold;"),
                           p("Location: Between the North and South galleries of the Rebouças Tunnel on the Lagoa-bound lane, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
@@ -447,7 +445,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "90.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 38 - ENGENHEIRO GAMA LOBO STREET", style = "font-weight: bold;"),
                           p("Location: Upslope from the Jardim Vila Isabel residential condominium located at Rua Engenheiro Gama Lobo, No. 650, in the Vila Isabel neighborhood.", style = "font-size: 80%;"),
@@ -460,7 +458,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "93.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 39 - GROTA FUNDA ROAD", style = "font-weight: bold;"),
                           p("Location: Grota Funda Road, in the Guaratiba neighborhood.", style = "font-size: 80%;"),
@@ -473,7 +471,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "95.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 40 - GUARARAPES COMMUNITY", style = "font-weight: bold;"),
                           p("Location: Guararapes Community, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
@@ -485,7 +483,7 @@ ui <- fluidPage(
                         ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "98.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 41 - MORRO DOS PRAZERES", style = "font-weight: bold;"),
                           p("Location: Morro dos Prazeres Community, in the Santa Teresa neighborhood.", style = "font-size: 80%;"),
@@ -497,7 +495,7 @@ ui <- fluidPage(
                         ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "105.jpg", style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 45 - LABORIAUX (ROCINHA)", style = "font-weight: bold;"),
                           p("Location: Laboriaux area, in the Rocinha community.", style = "font-size: 80%;"),
@@ -510,7 +508,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "108.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 46 - RUA ITAPIRÚ", style = "font-weight: bold;"),
                           p("Location: Rua Itapirú, in the Catumbi neighborhood.", style = "font-size: 80%;"),
@@ -522,7 +520,7 @@ ui <- fluidPage(
                         ),
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "111.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 47 - LADEIRA DO ASCURRA", style = "font-weight: bold;"),
                           p("Location: Ladeira do Ascurra, in the Cosme Velho neighborhood.", style = "font-size: 80%;"),
@@ -535,7 +533,7 @@ ui <- fluidPage(
                         
                         
                         tags$div(
-                          style = "padding: 5px; width: 500px; text-align: center;",  # Container for image and caption
+                          style = "padding: 5px; text-align: center;",  # Container for image and caption
                           img(src = "117.jpg",  style = "width: 100%;"),  # Image fills the container width
                           h6("Incident Nº 49 - ESTRADA DO RIO JEQUIÁ", style = "font-weight: bold;"),
                           p("Location: Estrada do Rio Jequiá, on Ilha do Governador.", style = "font-size: 80%;"),
