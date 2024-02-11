@@ -4,6 +4,9 @@ library(dplyr)
 library(ggspatial)
 library(cowplot)
 library(raster)
+library(exactextractr)
+library(tidyr)
+library(ggrepel)
 ## install.packages("devtools")
 #devtools::install_github("yutannihilation/ggsflabel")
 #library(ggsflabel)
@@ -15,6 +18,9 @@ municip <- st_read("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/StudyArea.shp")
 
 district <-st_read("D:/PROslide_RIO/FromPrefeitura/Limite_de_Bairros/Limite_de_Bairros.shp") %>% st_transform(st_crs(municip))
 district <- st_join(district, municip, join = st_intersects, largest = TRUE)
+#To make paqueta a new "rp"
+district <- district %>%
+  mutate(rp = ifelse(nome == "Paquetá", "Paquetá", rp))
 
 district <- st_cast(district, "POLYGON")
 
@@ -24,10 +30,10 @@ district <- district %>%
 
 summary(district$area)
 # Define a threshold area size
-threshold_area <- set_units(6118, m^2)
+threshold_area <- 100000
 
 # Subset districts larger than the threshold
-district <- district[district$area > threshold_area, ]
+district <- district[as.numeric(district$area) > threshold_area, ]
 
 
 district_grouped <- district %>%
@@ -62,34 +68,33 @@ logo_file <- "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/Untitled.jpg"
 pred <- resample(pred, hillshade, method = "bilinear")
 
 #water <- sf::read_sf(dsn = "C:/Users/pedro/Documents/Portfolio_codes/Lima_2001_NewVIZ/Water/stehendeGewaesser.shp")
+output_file <- "D:/PROslide_RIO/Figs/per_district/percentages.txt"
 
 # 4. Plot a separated ggplot map for each municipality with the prediction raster overlayed
 #for (i in 1:5) {
 for (i in 1:length(district_grouped$rp)) {
-  bairro <- district_grouped[i,] %>% as_Spatial()
+  plan_regio <- district_grouped[i,] %>% as_Spatial()
   
-  rp=bairro$rp
+  rp=plan_regio$rp
   
-  save_name=bairro$rp
+  save_name=plan_regio$rp
   
-  #pred_clip <- crop(pred, extent(bairro))
-  if (!is.null(intersect(extent(pred), extent(bairro)))) {
-    pred_clip <- crop(pred, extent(bairro))
+  #pred_clip <- crop(pred, extent(plan_regio))
+  if (!is.null(intersect(extent(pred), extent(plan_regio)))) {
+    pred_clip <- crop(pred, extent(plan_regio))
   } else {
-    cat("The raster and bairro do not overlap. Skipping this iteration.\n")
+    cat("The raster and plan_regio do not overlap. Skipping this iteration.\n")
     next
   }
   
   
+  pred_clip <- mask(pred_clip, plan_regio)
   
   
+  #slp_clip <- crop(slp, extent(plan_regio))
+  #slp_clip <- mask(slp_clip, plan_regio)
   
-  pred_clip <- mask(pred_clip, bairro)
-  
-  #slp_clip <- crop(slp, extent(bairro))
-  #slp_clip <- mask(slp_clip, bairro)
-  
-  hill_clip <- crop(hillshade, extent(bairro))
+  hill_clip <- crop(hillshade, extent(plan_regio))
   
   pred_df       <- as.data.frame(pred_clip, xy = TRUE) 
   
@@ -100,35 +105,106 @@ for (i in 1:length(district_grouped$rp)) {
                              y = coordinates(hill_clip)[, 2], 
                              hill = hillshade_values) 
   
-  points_in <- st_intersection(points, st_as_sf(bairro))
+  points_in <- st_intersection(points, st_as_sf(plan_regio))
   n_slide  <- nrow(points_in)
-  #no_model_municip <- st_intersection(no_model, st_as_sf(bairro))
-  # Extract x and y coordinate ranges from the bairro's geometry
-  bairro <- st_as_sf(bairro)
-  x_range <- range(st_coordinates(bairro)[, 1])
-  y_range <- range(st_coordinates(bairro)[, 2])
+  #no_model_municip <- st_intersection(no_model, st_as_sf(plan_regio))
+  # Extract x and y coordinate ranges from the plan_regio's geometry
+  plan_regio <- st_as_sf(plan_regio)
+  x_range <- range(st_coordinates(plan_regio)[, 1])
+  y_range <- range(st_coordinates(plan_regio)[, 2])
   
   
   pred_df$Susceptibility <-   factor(pred_df$count_, levels = c("1", "2", "3"), labels = c("Low", "Medium", "High"))
   
   
   
-  intersects <- st_intersects(district, bairro, sparse = FALSE)
+  intersects <- st_intersects(district, plan_regio, sparse = FALSE)
   
   # Create a logical vector to filter districts
-  within_bairro <- apply(intersects, MARGIN = 1, FUN = any)
+  within_plan_regio <- apply(intersects, MARGIN = 1, FUN = any)
   
-  # Filter the district data to only include those within bairro
-  district_within_bairro <- district[within_bairro, ]
-  district_within_bairro <- st_intersection(district_within_bairro, bairro)
+  # Filter the district data to only include those within plan_regio
+  district_within_plan_regio <- district[within_plan_regio, ]
+  district_within_plan_regio <- st_intersection(district_within_plan_regio, plan_regio)
   # Calculate the area of the intersected geometries
-  district_within_bairro$area <- st_area(district_within_bairro)
+  district_within_plan_regio$area <- st_area(district_within_plan_regio)
   
   # Set a minimum area threshold to filter out small slivers
-  min_area_threshold <- min(district_within_bairro$area) * 0.1 # adjust threshold as appropriate
+  min_area_threshold <- min(district_within_plan_regio$area) * 0.1 # adjust threshold as appropriate
   
   # Filter out small slivers
-  district_within_bairro <- district_within_bairro[district_within_bairro$area > min_area_threshold, ]
+  district_within_plan_regio <- district_within_plan_regio[district_within_plan_regio$area > min_area_threshold, ]
+  district_within_plan_regio$centroid <- sf::st_centroid(district_within_plan_regio$geometry)
+  
+  # Then, create a new data frame that contains the labels and their positions
+  label_data <- district_within_plan_regio %>%
+    dplyr::mutate(geometry = st_centroid(geometry)) %>%
+    dplyr::select(nome, geometry) %>%
+    st_as_sf()  # Ensure label_data is an sf object
+  ###########################################################################################
+  ###########################################################################################
+  ###########################################################################################
+  # Perform extraction
+  extraction <- exact_extract(pred, district_within_plan_regio, function(values, coverage_fraction) {
+    t <- table(factor(values, levels = c(1, 2, 3)))
+    return(t / sum(t) * 100)
+  })
+  
+  
+  # Transpose the extraction data to align rows with districts and columns with categories
+  percentages_transposed <- t(extraction)
+  percentages <- as.data.frame(percentages_transposed)
+  
+  # Now, set the column names correctly
+  colnames(percentages) <- c("Low", "Medium", "High")
+  
+  # Ensure the district names match the number of rows in percentages
+  if (length(district_within_plan_regio$nome) == nrow(percentages)) {
+    percentages$District <- district_within_plan_regio$nome
+  } else {
+    warning("The number of districts does not match the number of rows in the percentages data frame.")
+  }
+  
+  # Reshaping the data to a long format using pivot_longer
+  percentages_long <- pivot_longer(
+    percentages,
+    cols = c("Low", "Medium", "High"),
+    names_to = "Category",
+    values_to = "Percentage"
+  )
+  percentages_long$Category <- factor(percentages_long$Category, levels = c("Low", "Medium", "High"), labels = c("Low", "Medium", "High"))
+  percentages_long$Category <- factor(percentages_long$Category, levels = rev(levels(percentages_long$Category)))
+  
+  percentages_long$District <- gsub(" ", "\n", percentages_long$District)
+  
+  # Now, plot the data with the reversed category order
+  GG_municip = ggplot(percentages_long, aes(x = District, y = Percentage, fill = Category)) +
+    geom_bar(stat = "identity", position = "fill", width = 0.3, color= "darkgray", alpha = 0.4) +
+    scale_fill_manual(
+      values = c("High" = "red", "Medium" = "yellow", "Low" = "#008000"),
+      name = "Categories", 
+      labels = c("High", "Medium", "Low")
+    ) +
+    
+    # geom_text(
+    #   aes(label = paste0(round(Percentage), "%")),
+    #   position = position_fill(vjust = 0.5), 
+    #   color = "black", 
+    #   size = 3.5
+    # ) +
+    coord_flip() +
+    scale_y_continuous(breaks = c(0, 0.5, 1)) +
+    theme_minimal() +
+    theme(
+      title = element_text(size = 10),
+      legend.position = "none",
+      axis.text.y = element_text(face = "bold")  # Bold y-axis text
+    ) +
+    labs(y = "", x = "", 
+         title = "Proportional Landslide\nSusceptibility by District")
+  
+  
+  
   #####################################################################
   #####################################################################
   #####################################################################
@@ -140,22 +216,26 @@ for (i in 1:length(district_grouped$rp)) {
     scale_alpha(name = "", range = c(0.6, 0), guide = "none")+
     ggnewscale::new_scale_fill()+
     
-    geom_raster(data= na.omit(pred_df), aes(x = x,  y = y, fill = Susceptibility),alpha=0.45)+
+    geom_raster(data= na.omit(pred_df), aes(x = x,  y = y, fill = Susceptibility),alpha=0.4)+
     scale_fill_manual(values = c("#008000", "yellow", "red")) +
     ggnewscale::new_scale_fill()+
     
-    #geom_sf(data = no_model_municip, aes(fill = "No modelled\n terrain"), color = "pink", size=3, alpha=0.5) +
-    #scale_fill_manual(name = "", values = c("No modelled\n terrain" = "pink")) +
     
-    geom_point(data=points_in, aes(x=x, y= y, color = "Landslide Points"), shape = 17, size=1) +
-    scale_color_manual(name = "", values = c("Landslide Points" = "black")) + # Define the color and legend name for the points
+    geom_point(data=points_in, aes(x=x, y= y, color = "Landslide locations"), shape = 17, size=1) +
+    scale_color_manual(name = "", values = c("Landslide locations" = "black")) + # Define the color and legend name for the points
     
-    geom_sf(data = bairro, fill = NA, color = "black", size=5) +
+    geom_sf(data = plan_regio, fill = NA, color = "black", size=5) +
     
-    geom_sf(data = district_within_bairro, fill = NA, color = "black", size=5) +
-    #geom_sf_label(data = district_within_bairro,aes(label = nome))+
+    geom_sf(data = district_within_plan_regio, fill = NA, color = "black", size=5) +
+    geom_sf_label(data = label_data, aes(label = nome), size = 1.5)+
+    # geom_sf_label_repel(data = district_within_plan_regio,
+    #                     aes(label = nome, geometry = geometry),
+    #                     size = 3,
+    #                     box.padding = unit(0.5, "lines"),
+    #                     point.padding = unit(0.5, "lines"))+
+    #geom_sf_label(data = district_within_plan_regio,aes(label = nome))+
     #ggtitle("Planning Regions (RP), Administrative Regions (RA), and Neighborhoods of the Municipality of Rio de Janeiro") +
-    ggtitle(paste0("Predictions for Municipality\nPlanning Regions (RP) ", rp))+
+    ggtitle(paste0("Predictions for Municipality Planning Regions (RP) ", rp))+
         coord_sf(xlim = x_range, ylim = y_range)+
     
     ggspatial::annotation_north_arrow(location = "bl",
@@ -196,12 +276,14 @@ for (i in 1:length(district_grouped$rp)) {
                                       width = unit(.5, "cm"),
                                       style = north_arrow_fancy_orienteering)+
     ggspatial::annotation_scale(location = "br",pad_y = unit(0, "cm"),pad_x = unit(0, "cm"))+
+    theme_minimal()+
     theme(legend.position = "bottom",#c(0.25, 0.1),
           #legend.background = element_rect(fill = "darkgray"),
           legend.key = element_rect(color = "black"),
           axis.title=element_blank(),
           axis.text=element_blank(),
           axis.ticks=element_blank())
+    
   
   
   #gradient_cols <- c("#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#091042")
@@ -227,18 +309,33 @@ for (i in 1:length(district_grouped$rp)) {
   #        y = "Frequency") 
   
  
-  plot_left=cowplot::plot_grid(mini_map, mini_map,mini_map,#histogram1,histogram2,# histogram2,
-                               ncol = 1, nrow = 3,
-                               rel_heights = c(0.6, 0.7, 0.7))
+  plot_left=cowplot::plot_grid(mini_map, GG_municip,#histogram1,histogram2,# histogram2,
+                               ncol = 1, nrow = 2,
+                               rel_heights = c(1, 3))
   
   plot2=cowplot::plot_grid(plot_left, plot2,
                            ncol = 2, nrow = 1,
-                           rel_widths = c(0.5,1))+
+                           rel_widths = c(0.4,1))+
     theme(
       panel.background = element_rect(fill = "white"), # Set panel background to white
       plot.background = element_rect(fill = "white"),  # Set plot background to white
       legend.background = element_rect(fill = "white") # Set legend background to white
     )
+  
+  
+  
+  # Export the percentage data to a .txt file
+  if (i == 1) {
+    # If it's the first iteration, write a new file with header
+    write.table(percentages, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE)
+  } else {
+    # If it's not the first iteration, append the data without header
+    write.table(percentages, file = output_file, sep = "\t", row.names = FALSE, col.names = FALSE, append = TRUE)
+  }
+  
+  
+  
+  
   
   
   
