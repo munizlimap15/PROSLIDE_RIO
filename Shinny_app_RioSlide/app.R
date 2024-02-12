@@ -94,6 +94,15 @@ legend_text2 <- paste(
 
 
 
+image_files <- c("16_Tijuca.png","1_Bangu.png", "10_Méier.png", "11_Paquetá.png", 
+                 "12_Pavuna.png", "13_Penha.png", "14_Ramos.png", 
+                 "15_Santa Cruz.png",  "17_Zona Sul.png", 
+                 "2_Barra da Tijuca.png", "3_Campo Grande.png", "4_Centro.png", 
+                 "5_Guaratiba.png", "6_Ilha do Governador.png", "7_Inhaúma.png", 
+                 "8_Jacarepaguá.png", "9_Madureira.png") # Continue with the rest of your images
+
+
+
 # Summary<- final_rioslides %>%
 #     dplyr::group_by(ssctbl_)%>%
 #     dplyr::summarise(n_slide = n())
@@ -577,10 +586,35 @@ ui <- fluidPage(
                    p(style = "color: grey; font-size: 80%; text-align: justify;",
                      strong("Legend for the plot:"), " ",
                      HTML(legend_text) # Insert the updated legend text
+                   ))),
+             # tags$div(
+             #   id = "scrolling-images",
+             #   style = "overflow-x: auto; white-space: nowrap; width: 100%; padding: 20px 0;",
+             #   # These images have an onclick event that triggers the showModal function in the server
+             #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')"),
+             #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')")
+             #   # Add more images as needed
+             # ),
+             tags$div(
+               id = "image-grid",
+               style = "display: flex; flex-wrap: wrap; justify-content: space-around; padding: 20px 0;",
+               lapply(image_files, function(image) {
+                 tags$div(
+                   style = "flex-basis: 48%; margin-bottom: 20px; box-sizing: border-box; padding: 5px;", # Adjust this to have two images per row
+                   tags$img(
+                     src = image,
+                     style = "width: 100%; height: auto; border: none !important;", # Ensure no border with !important
+                     onclick = paste0("Shiny.setInputValue('image_clicked', '", image, "')")
                    )
-               )
+                 )
+               })
              )
+             
+             
+             ,
+             
     ),
+    
     
     
     
@@ -1037,7 +1071,7 @@ server <- function(input, output, session) {
     #   filter(anolaudo >= input$yearSlider[1], anolaudo <= input$yearSlider[2])
     # 
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 12)) %>%
+    m <- leaflet(options = leafletOptions(minZoom = 11, maxZoom = 13)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
       leaflet.extras::addHeatmap(data = st_coordinates(final_rioslides_wgs84), 
@@ -1093,7 +1127,7 @@ server <- function(input, output, session) {
     
     
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
-    m2 <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 12)) %>%
+    m2 <- leaflet(options = leafletOptions(minZoom = 10, maxZoom = 13)) %>%
       addTiles() %>%
       leafem::addMouseCoordinates() %>%
       
@@ -1129,6 +1163,17 @@ server <- function(input, output, session) {
     m2  # Return the leaflet map
     
   })
+
+  observeEvent(input$image_clicked, {
+    image_path <- input$image_clicked
+    showModal(modalDialog(
+      title = "",
+      tags$img(src = image_path, style = "width:100%; height: auto; border: none;"), # Correct placement of style
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+  
   ##############################################################################
   ##############################################################################
   ##############################################################################

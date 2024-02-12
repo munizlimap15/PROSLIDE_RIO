@@ -34,7 +34,9 @@ threshold_area <- 100000
 
 # Subset districts larger than the threshold
 district <- district[as.numeric(district$area) > threshold_area, ]
-
+district$objectid <- seq_len(nrow(district))
+excluded_ids <- c(145, 152, 153, 154)  # Example IDs of features to exclude
+district <- district[!district$objectid %in% excluded_ids, ]
 
 district_grouped <- district %>%
   group_by(rp) %>%
@@ -59,7 +61,7 @@ points$x <- coords[, "X"]
 points$y <- coords[, "Y"]
 
 
-logo_file <- "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/Untitled.jpg"
+logo_file <- "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/myplot.png"
 
 # no_model <- sf::read_sf(dsn = "D:/PEDRO/Slope_unitsPublication/flat_terrain.shp")
 # no_model <- st_transform(no_model, st_crs(states))
@@ -67,7 +69,6 @@ logo_file <- "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/Untitled.jpg"
 
 pred <- resample(pred, hillshade, method = "bilinear")
 
-#water <- sf::read_sf(dsn = "C:/Users/pedro/Documents/Portfolio_codes/Lima_2001_NewVIZ/Water/stehendeGewaesser.shp")
 output_file <- "D:/PROslide_RIO/Figs/per_district/percentages.txt"
 
 # 4. Plot a separated ggplot map for each municipality with the prediction raster overlayed
@@ -221,8 +222,8 @@ for (i in 1:length(district_grouped$rp)) {
     ggnewscale::new_scale_fill()+
     
     
-    geom_point(data=points_in, aes(x=x, y= y, color = "Landslide locations"), shape = 17, size=1) +
-    scale_color_manual(name = "", values = c("Landslide locations" = "black")) + # Define the color and legend name for the points
+    geom_point(data=points_in, aes(x=x, y= y, color = "Landslide\nlocations"), shape = 17, size=1) +
+    scale_color_manual(name = "", values = c("Landslide\nlocations" = "black")) + # Define the color and legend name for the points
     
     geom_sf(data = plan_regio, fill = NA, color = "black", size=5) +
     
@@ -235,7 +236,7 @@ for (i in 1:length(district_grouped$rp)) {
     #                     point.padding = unit(0.5, "lines"))+
     #geom_sf_label(data = district_within_plan_regio,aes(label = nome))+
     #ggtitle("Planning Regions (RP), Administrative Regions (RA), and Neighborhoods of the Municipality of Rio de Janeiro") +
-    ggtitle(paste0("Predictions for Municipality Planning Regions (RP) ", rp))+
+    ggtitle(paste0("Predictions for Municipality Planning Regions (PR) ", rp))+
         coord_sf(xlim = x_range, ylim = y_range)+
     
     ggspatial::annotation_north_arrow(location = "bl",
@@ -255,20 +256,20 @@ for (i in 1:length(district_grouped$rp)) {
          caption = "Note: These predictions are intended for regional-scale interpretation. Local-scale decisions should not be based solely on this data.\n Please exercise caution and consider the context of the scale when interpreting these maps.") +
     annotate("text", x = min(x_range), y = max(y_range), hjust =0,vjust =-1.5,
              label = paste0("Number of observed landslides: ", n_slide), 
-             color = "red", size = 3)
+             color = "black", size = 3)
   
   ###############################################################################################
   ###############################################################################################
   ###############################################################################################
   plot2=ggdraw() +
     draw_plot(plot2)+
-    draw_image(logo_file,  x = .35, y = .45, scale = .3)
+    draw_image(logo_file,  x = .35, y = .45, scale = .15)
   
   
   
   mini_map <- ggplot(data = district_grouped) +
     geom_sf(fill = "white", color = "darkgray") + # All municipalities in white
-    geom_sf(data = district_grouped[i,], fill = "red", color = "red", size=3) +
+    geom_sf(data = district_grouped[i,], fill = "black", color = "black", size=3) +
     
     ggspatial::annotation_north_arrow(location = "bl",
                                       pad_y = unit(0, "cm"),
@@ -341,7 +342,7 @@ for (i in 1:length(district_grouped$rp)) {
   
   # Save the figure as a PNG file
   filename <- paste0(i, "_", save_name, ".png")
-  ggsave(filename, plot2, width = 12, height = 8)
+  ggsave(filename, plot2, width = 12, height = 9)
   # Print the filename for reference
   cat("Saved:", filename, "\n")
 }

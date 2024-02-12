@@ -17,5 +17,19 @@ source("10_slidesXsuscGAM.R")
 source("11_pickRain.R")
 source("12_Rainfall_thresh.R")
 source("13_Graphs.R")
+source("14_Shinny_app.R")     
+source("15_GIF_rain.R")            
+source("16_export_pred_to_shiny.R")            
+source("17_PROJ_LOGO.R")                
+source("18_FAVELASXsusc.R")  
+source("18_RJXsusc.R")  
+source("19_Slider_rocinha.R")              
+source("2_slidesXsusc.R")
+source("20_pred_GAM_per_bairro.R")
+source("20_pred_GAM_NUMERICAL_per_bairro.R")
+source("20_pred_per_bairro.R")     
+
 
 source("CTRL-T\CTRL-T_code.R")
+
+
