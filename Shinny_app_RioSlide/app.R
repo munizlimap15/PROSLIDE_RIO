@@ -4,31 +4,10 @@ library(dplyr)
 library(fontawesome)
 library(shiny)
 library(raster)
+library(viridis)
+library(classInt)
 
 
-# source_dir <- "D:/PROslide_RIO/DATA"
-# dest_dir <- getwd()
-# 
-# # Base names of the shapefiles without extensions
-# base_names <- c("landslides_2023", "StudyArea")
-# 
-# # Extensions of the shapefile components
-# extensions <- c(".shp", ".shx", ".dbf", ".prj", ".sbn", ".sbx")
-# 
-# # Copy each component of each shapefile
-# for (base_name in base_names) {
-#   for (extension in extensions) {
-#     file_name <- paste0(base_name, extension)
-#     source_file_path <- file.path(source_dir, file_name)
-#     dest_file_path <- file.path(dest_dir, file_name)
-#     
-#     # Check if the source file exists before attempting to copy
-#     if (file.exists(source_file_path)) {
-#       file.copy(source_file_path, dest_file_path)
-#     }
-#   }
-# }
-# 
 
 final_rioslides     <- st_read("landslides_2023_with_pred.shp")#landslides_2023.shp
 study_area          <- st_read("StudyArea.shp")
@@ -50,9 +29,9 @@ customPalette2 <- colorFactor(palette = c("#94a8af",  "#d2d2d2", "#b9a88d"),
                              na.color = "transparent")
 
 # Ensure the same CRS
-final_rioslides     <- sf::st_transform(final_rioslides, st_crs(study_area))
-Limite_Favelas_2019 <- sf::st_transform(Limite_Favelas_2019, st_crs(study_area))
-stations            <- sf::st_transform(stations, st_crs(study_area))
+# final_rioslides     <- sf::st_transform(final_rioslides, st_crs(study_area))
+# Limite_Favelas_2019 <- sf::st_transform(Limite_Favelas_2019, st_crs(study_area))
+# stations            <- sf::st_transform(stations, st_crs(study_area))
 
 
 # Transform both to WGS84
@@ -101,11 +80,29 @@ image_files <- c("16_Tijuca.png","1_Bangu.png", "10_Méier.png", "11_Paquetá.pn
                  "5_Guaratiba.png", "6_Ilha do Governador.png", "7_Inhaúma.png", 
                  "8_Jacarepaguá.png", "9_Madureira.png") # Continue with the rest of your images
 
+slopeUnits <- st_read("slusmooth_gen_subset.shp")
+slopeUnits <- sf::st_transform(slopeUnits, st_crs(study_area))
+slopeUnits   <- st_transform(slopeUnits, 4326)
 
 
-# Summary<- final_rioslides %>%
-#     dplyr::group_by(ssctbl_)%>%
-#     dplyr::summarise(n_slide = n())
+# # Define the breaks and colors based on the legend
+# breaks <- c(0, 0.2, 0.4, 0.6, 0.8, 1)
+# colors <- rev(viridis(5, option = "C")) # 5 colors from the cividis palette
+# #colorPalette <- colorNumeric(palette = cividis(100), domain = c(0, 1), na.color = "transparent")
+# colorPalette <- colorBin(palette = colors, domain = slopeUnits$nflat_perc, bins = breaks, na.color = "transparent")
+
+# Calculate natural breaks
+n_breaks= 5 # Define the number of breaks you want
+jenks_breaks <- classIntervals(slopeUnits$nslide, n = n_breaks, style = "jenks")$brks
+# Define colors (adjust the number of colors to match n_breaks - 1)
+colors <- rev(viridis(length(jenks_breaks) - 1, option = "C"))
+colors <- c("#440356", "#4F5F95", "#218F8D", "#52C569", "#FAE722")
+# Create a color palette function
+colorPalette <- colorBin(palette = rev(colors), domain = slopeUnits$nslide, bins = jenks_breaks, na.color = "transparent")
+
+
+
+
 
 #https://bootswatch.com/
 # bslib::bootswatch_themes(5)
@@ -116,8 +113,19 @@ image_files <- c("16_Tijuca.png","1_Bangu.png", "10_Méier.png", "11_Paquetá.pn
 ui <- fluidPage(
   theme = bslib::bs_theme(bootswatch = "sandstone"),
   
-  titlePanel("RioSlide"),
-  div(style = "text-align: left;", img(src = "Untitled.jpg", height = "300px")), # Update the image path as needed
+  tags$head(
+    tags$style(HTML("
+      .nav-tabs > li > a {
+        font-size: 05px; /* Smaller font size for tabs */
+      }
+      body {
+        font-size: 14px; /* Adjust the base font size for the entire site */
+      }
+    "))
+  ),
+  
+  titlePanel(""),
+  div(style = "text-align: left;", img(src = "Untitled.jpg", height = "200px")), # Update the image path as needed
   tabsetPanel(
     
     #tabPanel("Landpage (To be done)",
@@ -127,8 +135,8 @@ ui <- fluidPage(
     
     
     tabPanel("Map and Data",
-             sidebarLayout(
-               sidebarPanel(width = "0%", height = "0px"),
+             #sidebarLayout(
+               #sidebarPanel(width = "0%", height = "0px"),
                mainPanel(
                  h4("Landslide Distribution in the study area (approx. 1,200km²)"),
                  leafletOutput("map", width = "100%", height = "600px"),
@@ -154,13 +162,29 @@ ui <- fluidPage(
                     a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
                     " | ",
                     a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO")))
+               #)
+             ),
+             tags$hr(), # Horizontal line for separation
+             h3("Project introduction"),
+             p(""),
+             p(readLines("abstract.txt")),
+             p("This project is conducted by an international team of experts in landslides, spatial analysis, and disaster management. Our initiative is centered around the development and implementation of innovative approaches to address the complex challenges posed by landslides. The project distinguishes itself through its multifaceted objectives, which include:"),
+             # Detailed project description in bullet points
+             tags$ul(
+               tags$li(strong("Scientific Impact:"),"Advancing the understanding of landslide dynamics and fostering innovation in geosciences."),
+               tags$li(strong("Technological Advancement:"),"Developing robust tools for landslide prediction."),
+               tags$li(strong("Societal Benefit:"),"Reducing susceptibility to landslides, enhancing preparedness, and promoting informed decision-making."),
+               tags$li(strong("Blueprint for Broader Application:"),"Establishing a comprehensive model for other Brazilian municipalities to adapt, utilize and develop further."),
+               tags$li(strong("Collaborative Spirit:")," Inviting partnerships and contributions to enrich and expand the project."),
+               tags$li(strong("Commitment to Ethical Standards:"),"Upholding integrity and transparency, devoid of any financial interests."),
+               tags$li(strong("Data Protection and Privacy:"),"Adhering to data protection regulations with a commitment to privacy. Contact ",
+                       a(href="mailto:pedro.lima@univie.ac.at", "Pedro Lima"),
+                       " for data-related inquiries."
                )
              )
     ),
     
-    
-    
-    
+
     
     
     tabPanel("Rio's Landslide History",
@@ -638,36 +662,8 @@ ui <- fluidPage(
     #          )
     # ),
     
-    
-    
-    
-    
-    
-    
-    tabPanel("Landslide and the favelas",
-             p("In the study area, approximately 4.06% is covered by favelas. Within these favelas, there are 587 landslides."),
-             p("The official model presents the following distribution of susceptibility across the favelas: It categorizes 45% of the area as low susceptibility, 35% as medium, and 20% as high susceptibility. In terms of landslide occurrence, this model identified 10 landslides in low susceptibility areas, 186 in medium susceptibility areas, and 391 in regions deemed to have high susceptibility."),
-             p("In contrast, the Data-driven model shows a different pattern in its assessment of landslide susceptibility. It classifies 32% of the favela areas as low susceptibility, 16% as medium, and 51% as high susceptible. Corresponding to this model’s predictions, 3 landslides were observed in areas of low susceptibility, 20 in medium susceptibility areas, and 564 landslides in high susceptibility zones."),
-             
-             # Content for the Input data overview tab
-             #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
-    ),
-    
-    
-    
-    
-    
-    
-    
-    
-        
-    
-    tabPanel("Input data overview",
-             # Content for the Input data overview tab
-             div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
-    ),
-    
     tabPanel("Dynamic Mapping Examples",
+             h4("Dynamic Mapping Examples"),
              # Content for the Input data overview tab
              p("The animations displayed below serve as educational references to demonstrate the concept of dynamic landslide susceptibility mapping. These visualizations are exemplary of the type of analyses that can be performed to understand how susceptibility to landslides can change under various environmental conditions, particularly in response to different precipitation events. The animations are sourced from external studies and are utilized here to provide a visual context for similar analyses that might be conducted within this research. They are included to aid in the comprehension of the methodologies and results that dynamic susceptibility mapping can yield, and should not be mistaken for the original output of the current project."),
              
@@ -695,217 +691,92 @@ ui <- fluidPage(
              ),
     ),
     
+    tabPanel("Slope units",
+             h3("Slope Units"),
+             mainPanel(
+                 leafletOutput("map4", width = "100%", height = "600px"),
+                 p(style = "color: grey; font-size: 80%; text-align: justify;",
+                   "This map provides an insightful visualization of slope units (SUs) distinguished by color gradients, which now reflect the number of landslides (nslide) recorded in each unit. The subset displayed are only the one containig signifivant amount of non-flat terrain (significant topographic variation). In the context of landslide susceptibility prediction, flat terrain, also denimonated as 'trivial terrain' (Steger et al., 2017) should not represented as it typically holds little to no likelihood for such events to happen. By focusing on areas with significant topographical variations, the map targets regions of heightened relevance to landslide analysis, excluding flat terrains which typically present minimal landslide occurence potential. It's important to note that for data protection and privacy considerations, the map's zoom levels are managed to ensure a balance between providing useful information and safeguarding sensitive data. Precise locations are generalized to comply with data protection standards, ensuring the privacy of potentially affected areas.",
+                   ),
+                 tags$hr(), # Horizontal line for separation
+                 #h3("Slope Units"),
+                 p(""),
+                 p("In the design planning of landslide susceptibility research, a fundamental step is the definition of the mapping unit. The mapping unit serves as the spatial entity within which predictors are summarized, allowing the model to learn the spatial components that may lead to landslides. This mapping unit can be a pixel, representing a single point in space, or a slope unit. The mapping unit should have defined boundaries and represent portions of the terrain with internal homogeneity and external (between-units) heterogeneity (Alvioli et al., 2020, 2016). The choice of mapping unit is crucial as it significantly influences the interpretation of spatial data and the resulting landslide susceptibility models."),
+                 p("These mapping unit can be, for instance, individual pixels, or slope units, which aggregate the landscape into more homogenous segments. The distinction between these approaches is crucial, as it influences the granularity of the analysis and the model's ability to capture relevant geomorphological features. Here, the slope units were delimited by using the r.slopeunits tool from Alvioli et al. (2016). r.slopeunit works in a LINUX environment and uses GRASS GIS. As defined in the manual (available at https://geomorphology.irpi.cnr.it/tools/slope-units), r.slopeunits demands a DEM, and some parameters to be defined by the user."),
+                 p("The delineation of slope units in this study was conducted using the r.slopeunits tool developed by Alvioli et al. (2016). This tool was applied to a digital terrain model (DTM) to generate slope units based on specific geomorphological criteria. The parameters for the slope units generation were set as follows: the digital elevation model (DEM) was specified with demmap=dtm20@PERMANENT, and the output slope unit map was named slumap=slurj17. The threshold for slope unit initiation was set to 1,500,000 (thresh=1500000), with a minimum area for slope units defined as 350,000 square meters (areamin=350000). The minimum coefficient of variation was set to 0.5 (cvmin=0.5), with a relaxation factor (rf) of 5 and a maximum of 10 iterations (maxiteration=10). This configuration was executed to optimize the delineation of slope units, ensuring they are representative of the terrain's geomorphological characteristics. Equation: r.slopeunits demmap=dtm20@PERMANENT slumap=slurj17 thresh=1500000 areamin=350000 cvmin=0.5 rf=5 maxiteration=10 --o."),
+                 
+                 tags$figure(
+                   img(src = "Su_raster.jpg", alt = "Slope Units Approach", style = "max-width:100%;height:auto;"),
+                   tags$figcaption("Comparison of pixel and slope units approaches in landslide susceptibility mapping. Source: Lima P.")
+                 
+                 
+               )
+             )
+    ),
     
-  
     
-    navbarMenu("Project Information",
+    
+    #tabPanel("Landslide and the favelas",
+             #p("In the study area, approximately 4.06% is covered by favelas. Within these favelas, there are 587 landslides."),
+             #p("The official model presents the following distribution of susceptibility across the favelas: It categorizes 45% of the area as low susceptibility, 35% as medium, and 20% as high susceptibility. In terms of landslide occurrence, this model identified 10 landslides in low susceptibility areas, 186 in medium susceptibility areas, and 391 in regions deemed to have high susceptibility."),
+             #p("In contrast, the Data-driven model shows a different pattern in its assessment of landslide susceptibility. It classifies 32% of the favela areas as low susceptibility, 16% as medium, and 51% as high susceptible. Corresponding to this model’s predictions, 3 landslides were observed in areas of low susceptibility, 20 in medium susceptibility areas, and 564 landslides in high susceptibility zones."),
+             
+             # Content for the Input data overview tab
+             #div(style = "text-align: center;", img(src = "dados.png", height = "700px")),
+    #),
+    
+    
+    
+    # Tab for potential further developments
+    tabPanel("Future Developments",
+             mainPanel(
+               h4("Vision(s) for potential advancement(s)"),
+               p("Beyond predicting where these landslides might happen, it is also worth to establish models able to predict potential areas where these landslides can reach. It is called the runout prt of the landslides, usually located in gentle slopes. Future perspectives might include applying numerical runout modelling to predict these regions. The focus will expand to include not only the initiation of landslides but also their runout characteristics, considering the full path of potential landslides and their impact on communities and infrastructure."),
+               p("One good example of the destructive power of these landslides is the event occured in 1996 and can be observed bellow under multiple perspectives."),
+               p("Fig A illustrates overlay between the satelite imagery, the 1996 landslide and the official landslide susceptibility model. Fig B provides an aerial overview of the terrain and the landslide. Fig C offers a simulation output from a runout model, showcasing the predicted flow paths and deposition zones."),
                
-               # Description Tab
-               tabPanel("Description",
-                        p(readLines("abstract.txt")),
-                        p("This project is conducted by an international team of experts in landslides, spatial analysis, and disaster management. Our initiative is centered around the development and implementation of innovative approaches to address the complex challenges posed by landslides. The project distinguishes itself through its multifaceted objectives, which include:"),
-                        
-                        # Detailed project description in bullet points
-                        tags$ul(
-                          tags$li(strong("Scientific Impact:"),"Advancing the understanding of landslide dynamics and fostering innovation in geosciences."),
-                          tags$li(strong("Technological Advancement:"),"Developing robust tools for landslide prediction."),
-                          tags$li(strong("Societal Benefit:"),"Reducing susceptibility to landslides, enhancing preparedness, and promoting informed decision-making."),
-                          tags$li(strong("Blueprint for Broader Application:"),"Establishing a comprehensive model for other Brazilian municipalities to adapt, utilize and develop further."),
-                          tags$li(strong("Collaborative Spirit:")," Inviting partnerships and contributions to enrich and expand the project."),
-                          tags$li(strong("Commitment to Ethical Standards:"),"Upholding integrity and transparency, devoid of any financial interests."),
-                          tags$li(strong("Data Protection and Privacy:"),"Adhering to data protection regulations with a commitment to privacy. Contact ",
-                                  a(href="mailto:pedro.lima@univie.ac.at", "Pedro Lima"),
-                                  " for data-related inquiries."
-                          )
-                        ),
-                        
-                        tags$hr(),
-                        
-                        h3(strong("SDGs: Project potential contributions to the Sustainable Development Goals (SDGs). ")),
-                        
-                        p(strong("Goal 4: Quality Education:"), 
-                          "Enhancing public understanding and integrating landslide susceptibility knowledge into educational programs fosters preparedness and resilience. Additionally, the project is deeply invested in technology and knowlwdge transfer through the active supervision of students. By mentoring the next generation of scientists, we ensure that the state of teh art tools and methodologies developed through our research are passed on effectively."),
-                        p(strong("Goal 9: Industry, Innovation, and Infrastructure:"), 
-                          "The project plays a pivotal role in safeguarding infrastructure, which is a cornerstone for sustainable development. By protecting essential infrastructure from landslide damage, we conserve valuable resources that can then be channeled into other critical services such as education and healthcare. This not only fortifies the physical fabric of our communities but also supports broader societal welfare. Innovation is at the core of our approach; we maintain open repositories and actively publish in journals to ensure that our findings and technological advancements are accessible and can be built upon. This transparency and knowledge sharing are vital for continuous improvement in our field and for inspiring new, cost-effective solutions in disaster risk management and infrastructure resilience."),
-                        p(strong("Goal 10: Reduce inequalities:"), 
-                          "In the Rioslide project, we are acutely aware of the disproportionate impact landslides have on the most vulnerable populations, who are often situated in high-risk areas without the means to safeguard their communities. By identifying these high-susceptible  zones and implementing comprehensive susceptibility maps, we aim to inform urban development and disaster preparedness in a way that prioritizes these communities. Our initiative is not just about reducing the risk of landslides; it's about leveling the playing field. By making the entire city safer, we are actively working to reduce social and economic disparities, ensuring that safety and resilience are not privileges but basic rights for all citizens."),
-                        p(strong("Goal 11: Sustainable Cities and Communities:"), 
-                          "The project significantly enhances urban planning by providing detailed landslide susceptibility maps. These maps are crucial for urban planners and local authorities as they navigate the complexities of urban expansion and development strategies. By identifying areas at high risk for landslides, we enable city planners to make informed decisions about where to build and how to design communities that are both safe and sustainable. Our work ensures that urban growth is managed in harmony with the natural environment, minimizing risks to human life and property. This proactive approach to urban development supports the creation of resilient communities that can thrive for generations to come."),
-                        p(strong("Goal 13: Climate Action:"), 
-                          "In the face of escalating climate-related challenges, the Rioslide project is at the forefront of climate action. Our comprehensive mapping of landslide susceptibility is integral to developing robust climate change adaptation strategies. By understanding the intricate dynamics of extreme weather events and their impact on landslide patterns, we are paving the way for communities to be better prepared for the future. Our work not only contributes to immediate mitigation efforts but also enhances our collective understanding of how climate change influences geological phenomena. This knowledge is crucial for shaping policies and practices that ensure long-term resilience against the unpredictable nature of our changing climate, safeguarding communities and ecosystems alike."),
-                        p(strong("Goal 15: Life on Land:"), 
-                          "In the densely populated urban landscape of Rio, the Rioslide project plays a vital role in harmonizing societal and environmental well-being. By pinpointing areas prone to landslides, our project not only aims to protect human communities but also to minimize disruptions to the local ecosystems. Recognizing the interconnectedness of urban and natural environments, especially in a bustling city like Rio, we are committed to informing land management strategies that respect and preserve the urban biodiversity. This mindful approach seeks to ensure that as the city grows and develops, it does so in a way that maintains the ecological harmony essential for the flourishing of both human and natural communities."),
-                        p(strong("Goal 16: Peace, Justice and strong institutions:"), 
-                          "The Rioslide project is acutely aware of the socio-economic disparities that make the most vulnerable communities disproportionately affected by landslides. Our initiative goes beyond technical mapping; it seeks to address these inequalities by providing equitable solutions in disaster risk management. By enhancing the safety of all sectors within urban areas, particularly those historically underserved, we contribute to reducing inequalities. Ensuring that every community has access to the same level of protection and resources for landslide preparedness not only makes our cities safer but also fosters a more inclusive environment where everyone has the opportunity to thrive."),
-                        p(strong("Goal 17: Partnerships for the Goals:"), 
-                          "Fostering partnerships to unify researchers, policymakers (from the municipality to the national level), and communities in landslide susceptibility work."),
-                        div(style = "text-align: center;", img(src = "SDGs.jpg", height = "500px")),
-                        
-                        tags$hr(),
-                        #div(style = "text-align: center;", img(src = "Proj_partners.jpg", height = "100px")),
-                        h3(strong("Acknowledgement:")),
-                        p("While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq) and relates to the process number 234815/2014-0. The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives."),
-                        div(style = "text-align: center;", img(src = "CNPq.png", height = "200px")),
-               ),
-               
-               # Collaborators Tab
-               tabPanel("Collaborators",
-                        
-                        p("This project is conducted by the following members:"),
-                        
-                        tags$ul(
-                          tags$li(
-                            div(
-                              strong("Pedro Lima"), " (Main responsible) - University of Vienna, Institute of Geography and Regional Research, Wien, Austria. ",
-                              div(
-                                style = "margin-left: 20px;",  # Adjust the value as needed to align to the right
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:pedro.lima@univie.ac.at", "pedro.lima@univie.ac.at"),
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://munizlimap15.github.io/Pedrolima/", target="_blank", "Personal webpage"),
-                                  tags$br(),
-                                  "Professional Website:", " ", a(href="http://geomorph.univie.ac.at/", target="_blank", "geomorph.univie.ac.at"),
-                                  tags$br(),
-                                  "ResearchGate:", " ", a(href="https://www.researchgate.net/profile/Pedro-Lima-2/", target="_blank", "Pedro Lima - ResearchGate"),
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0003-2429-3752", target="_blank", "0000-0003-2429-3752"),
-                                  tags$br(),
-                                  "Lattes:", " ", a(href="https://munizlimap15.github.io/Pedrolima/", target="_blank", "Lattes - Pedro Lima")
-                                )
-                              )
-                            )
-                          ),
-                          
-                          tags$li(
-                            div(
-                              strong("Luiz Carlos Teixeira Coelho"), " - Instituto Municipal de Urbanismo Pereira Passos - IPP, Rio de Janeiro, Brazil.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:luiz.coelho@eng.uerj.br", "luiz.coelho@eng.uerj.br"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0002-4466-9772", target="_blank", "0000-0002-4466-9772")  # Replace with actual ORCID
-                                )
-                              )
-                            )
-                          ),
-                          
-                          tags$li(
-                            div(
-                              strong("Mateo Moreno Zapata"), " - Eurac Research, Institute for Earth Observation, Bozen, Italy.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:mateo.morenozapata@eurac.edu", "mateo.morenozapata@eurac.edu"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0002-9530-3076", target="_blank", "0000-0002-9530-3076")  # Replace with actual ORCID
-                                  
-                                )))),
-                          
-                          tags$li(
-                            div(
-                              strong("Stefan Steger"), " - GeoSphere Austria – Austria ́s national geological, geophysical, climatological and meteorological service - RiskLab – Weather, Climate & Natural Hazards.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:stefan.steger@geosphere.at", "stefan.steger@geosphere.at"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0003-0886-5191", target="_blank", "0000-0003-0886-5191")  # Replace with actual ORCID
-                                  
-                                )))),
-                          tags$li(
-                            div(
-                              strong("Pedro Ivo Camarinha"), " - Centro Nacional de Monitoramento e Alertas de Desastres Naturais, Ministry of Science, Technology and Innovation of Brazil, São José dos Campos, Brazil.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:pedro.camarinha@cemaden.gov.br", "pedro.camarinha@cemaden.gov.br"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="www.cemaden.gov.br", target="_blank", "www.cemaden.gov.br"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0002-1316-3066", target="_blank", "0000-0002-1316-3066")  # Replace with actual ORCID
-                                  
-                                )))),
-                          
-                          tags$li(
-                            div(
-                              strong("Felipe Cerbella Mandarino"), " - Instituto Municipal de Urbanismo Pereira Passos - IPP, Rio de Janeiro, Brazil.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:felipe.mandarino@rio.rj.gov.br", "felipe.mandarino@rio.rj.gov.br"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
-                                  
-                                )))),
-                          
-                          tags$li(
-                            div(
-                              strong("Raquel Batista Medeiros da Fonseca"), " - Fundação Geo - Rio, Prefeitura do Rio de Janeiro, Rio de Janeiro, Brazil.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:raquelbmfonseca@gmail.com", "raquelbmfonseca@gmail.com"),  # Replace with actual email
-                                  #tags$br(),
-                                  #"Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
-                                  tags$br(),
-                                  #"ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
-                                  
-                                )))),
-                          
-                          tags$li(
-                            div(
-                              strong("Guilherme Damasceno Raposo"), " - Universidade do Estado do Rio de Janeiro, Department of Cartographic Engineering, Rio de Janeiro, Brazil.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:guiraposoo@gmail.com", "guiraposoo@gmail.com"),  # Replace with actual email
-                                  #tags$br(),
-                                  #"Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
-                                  tags$br(),
-                                  #"ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
-                                  
-                                )))),
-                          
-                          tags$li(
-                            div(
-                              strong("Thomas Glade"), " - University of Vienna, Institute of Geography and Regional Research, Wien, Austria.",
-                              div(
-                                style = "margin-left: 20px;",
-                                tags$div(
-                                  "Email:", " ", a(href="mailto:thomas.glade@univie.ac.at", "thomas.glade@univie.ac.at"),  # Replace with actual email
-                                  tags$br(),
-                                  "Webpage:", " ", a(href="https://homepage.univie.ac.at/thomas.glade/", target="_blank", "https://homepage.univie.ac.at/thomas.glade/"),  # Replace with actual webpage
-                                  tags$br(),
-                                  "ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
-                                  
-                                )))),
-                          #tags$li("Thomas Glade - University of Vienna, Institute of Geography and Regional Research, Wien, Austria.")
-                        ),
-                        tags$iframe(
-                          src = "coolab.pdf",  # Replace with the path to your PDF file
-                          width = "60%", height = "1000px",
-                          style = "border: none;"
-                        )
-                        
-               ),
-               
+               # Placeholder for the image
+               div(
+                 style = "display: flex; justify-content: center; align-items: flex-start;", # This container will hold the image-captions pairs
+                 div(
+                   style = "margin-right: 10px; text-align: center;", # Right margin for spacing between images and centering text
+                   img(src = "1996.png", height = "500px", alt = "Conceptual Diagram"),
+                   p(style = "color: grey; font-size: 80%; text-align: justify;","Landslide and the prediction map.", style="margin-top: 5px;") # Caption for the first image
+                 ),
+                 div(
+                   style = "display: flex; justify-content: center; align-items: flex-start;", # This container will hold the image-captions pairs
+                   div(
+                     style = "margin-right: 10px; text-align: center;", # Right margin for spacing between images and centering text
+                     img(src = "1996_2.png", height = "500px", alt = "Conceptual Diagram"),
+                     p(style = "color: grey; font-size: 80%; text-align: justify;","Landslide and the topography.", style="margin-top: 5px;") # Caption for the first image
+                   ),
+                 div(
+                   style = "text-align: center;", # Centering text for the second image caption
+                   img(src = "Pedro2_hflow_map.gif", height = "500px", alt = "Conceptual Diagram"),
+                   p(style = "color: grey; font-size: 80%; text-align: justify;","r.avaflow simulation. Source: Lima, P.(unpublished)", style="margin-top: 5px;") # Caption for the second image
+                 ))),
+               # Placeholder for the passage from your paper
+               p("Looking ahead at the evolution of landslide analysis, imagine a future where we can predict not just when and where landslides might start, but also trace their path down to the more level grounds next to the hills where they begin. These often-neglected flat areas are just as important to consider for a complete picture of how landslides affect the landscape.
+               Building on the ideas from Mergili et al. (2019) and Lima et al. (2023), we could one day use advanced simulation tools to map out where landslides may go, especially in regions where the land flattens out. These tools would help us understand not only the likely areas of landslide travel but also the extent of their influence on communities and the environment.
+                 This future idea, while still a concept, proposes a full-circle method for predicting landslides. It's about looking at the entire journey of a landslide—from its powerful start on a hilltop to its final reach into gentler lands below—ensuring that we have a complete understanding of its movement. This way, we can better prepare for and adapt to the way landslides reshape our world, without focusing solely on the places where they're most likely to begin."),
+              
+               )
     ),
     
     
     
     
+        
+    
+   
+    
    navbarMenu("Outreach and Resources",
                
-               # Outreach Panel
+              tabPanel("Input data overview",
+                       # Content for the Input data overview tab
+                       div(style = "text-align: center;", img(src = "dados.png", height = "1000px")),
+              ),
+              # Outreach Panel
                tabPanel("Outreach, transparency",
                         #h4("Connect with Us"),
                         
@@ -926,13 +797,211 @@ ui <- fluidPage(
                         # tags$iframe(src = "https://www.youtube.com/embed/QbziLSNcc1g", width = "560", height = "315")
                ),
                
-               
-               tabPanel("Timeline & Development plan",
-                        # Content for the Input data overview tab
-                        div(style = "text-align: center;", 
-                            img(src = "methods.jpg", height = "300px", style = "filter: grayscale(100%);"))
-                        ,
-               ),
+              # Collaborators Tab
+              tabPanel("Collaborators",
+                       
+                       p("This project is conducted by the following members:"),
+                       
+                       tags$ul(
+                         tags$li(
+                           div(
+                             strong("Pedro Lima"), " (Main responsible) - University of Vienna, Institute of Geography and Regional Research, Wien, Austria. ",
+                             div(
+                               style = "margin-left: 20px;",  # Adjust the value as needed to align to the right
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:pedro.lima@univie.ac.at", "pedro.lima@univie.ac.at"),
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://munizlimap15.github.io/Pedrolima/", target="_blank", "Personal webpage"),
+                                 tags$br(),
+                                 "Professional Website:", " ", a(href="http://geomorph.univie.ac.at/", target="_blank", "geomorph.univie.ac.at"),
+                                 tags$br(),
+                                 "ResearchGate:", " ", a(href="https://www.researchgate.net/profile/Pedro-Lima-2/", target="_blank", "Pedro Lima - ResearchGate"),
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0003-2429-3752", target="_blank", "0000-0003-2429-3752"),
+                                 tags$br(),
+                                 "Lattes:", " ", a(href="https://munizlimap15.github.io/Pedrolima/", target="_blank", "Lattes - Pedro Lima")
+                               )
+                             )
+                           )
+                         ),
+                         
+                         tags$li(
+                           div(
+                             strong("Luiz Carlos Teixeira Coelho"), " - Instituto Municipal de Urbanismo Pereira Passos - IPP, Rio de Janeiro, Brazil.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:luiz.coelho@eng.uerj.br", "luiz.coelho@eng.uerj.br"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0002-4466-9772", target="_blank", "0000-0002-4466-9772")  # Replace with actual ORCID
+                               )
+                             )
+                           )
+                         ),
+                         
+                         tags$li(
+                           div(
+                             strong("Mateo Moreno Zapata"), " - Eurac Research, Institute for Earth Observation, Bozen, Italy.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:mateo.morenozapata@eurac.edu", "mateo.morenozapata@eurac.edu"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0002-9530-3076", target="_blank", "0000-0002-9530-3076")  # Replace with actual ORCID
+                                 
+                               )))),
+                         
+                         tags$li(
+                           div(
+                             strong("Stefan Steger"), " - GeoSphere Austria – Austria ́s national geological, geophysical, climatological and meteorological service - RiskLab – Weather, Climate & Natural Hazards.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:stefan.steger@geosphere.at", "stefan.steger@geosphere.at"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://example.com", target="_blank", "Example Webpage"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0003-0886-5191", target="_blank", "0000-0003-0886-5191")  # Replace with actual ORCID
+                                 
+                               )))),
+                         tags$li(
+                           div(
+                             strong("Pedro Ivo Camarinha"), " - Centro Nacional de Monitoramento e Alertas de Desastres Naturais, Ministry of Science, Technology and Innovation of Brazil, São José dos Campos, Brazil.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:pedro.camarinha@cemaden.gov.br", "pedro.camarinha@cemaden.gov.br"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="www.cemaden.gov.br", target="_blank", "www.cemaden.gov.br"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0002-1316-3066", target="_blank", "0000-0002-1316-3066")  # Replace with actual ORCID
+                                 
+                               )))),
+                         
+                         tags$li(
+                           div(
+                             strong("Felipe Cerbella Mandarino"), " - Instituto Municipal de Urbanismo Pereira Passos - IPP, Rio de Janeiro, Brazil.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:felipe.mandarino@rio.rj.gov.br", "felipe.mandarino@rio.rj.gov.br"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
+                                 
+                               )))),
+                         
+                         tags$li(
+                           div(
+                             strong("Raquel Batista Medeiros da Fonseca"), " - Fundação Geo - Rio, Prefeitura do Rio de Janeiro, Rio de Janeiro, Brazil.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:raquelbmfonseca@gmail.com", "raquelbmfonseca@gmail.com"),  # Replace with actual email
+                                 #tags$br(),
+                                 #"Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
+                                 tags$br(),
+                                 #"ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
+                                 
+                               )))),
+                         
+                         tags$li(
+                           div(
+                             strong("Guilherme Damasceno Raposo"), " - Universidade do Estado do Rio de Janeiro, Department of Cartographic Engineering, Rio de Janeiro, Brazil.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:guiraposoo@gmail.com", "guiraposoo@gmail.com"),  # Replace with actual email
+                                 #tags$br(),
+                                 #"Webpage:", " ", a(href="https://www.rio.rj.gov.br/web/ipp/who-we-are", target="_blank", "https://www.rio.rj.gov.br/web/ipp/who-we-are"),  # Replace with actual webpage
+                                 tags$br(),
+                                 #"ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
+                                 
+                               )))),
+                         
+                         tags$li(
+                           div(
+                             strong("Thomas Glade"), " - University of Vienna, Institute of Geography and Regional Research, Wien, Austria.",
+                             div(
+                               style = "margin-left: 20px;",
+                               tags$div(
+                                 "Email:", " ", a(href="mailto:thomas.glade@univie.ac.at", "thomas.glade@univie.ac.at"),  # Replace with actual email
+                                 tags$br(),
+                                 "Webpage:", " ", a(href="https://homepage.univie.ac.at/thomas.glade/", target="_blank", "https://homepage.univie.ac.at/thomas.glade/"),  # Replace with actual webpage
+                                 tags$br(),
+                                 "ORCID:", " ", a(href="https://orcid.org/0000-0001-9576-5257", target="_blank", "0000-0001-9576-5257")  # Replace with actual ORCID
+                                 
+                               )))),
+                         #tags$li("Thomas Glade - University of Vienna, Institute of Geography and Regional Research, Wien, Austria.")
+                       ),
+                       tags$iframe(
+                         src = "coolab.pdf",  # Replace with the path to your PDF file
+                         width = "60%", height = "1000px",
+                         style = "border: none;"
+                       )
+                       
+              ),
+              
+              
+              tabPanel("Project Synopsis and Acknowledgements",
+                       # p(readLines("abstract.txt")),
+                       # p("This project is conducted by an international team of experts in landslides, spatial analysis, and disaster management. Our initiative is centered around the development and implementation of innovative approaches to address the complex challenges posed by landslides. The project distinguishes itself through its multifaceted objectives, which include:"),
+                       # 
+                       # # Detailed project description in bullet points
+                       # tags$ul(
+                       #   tags$li(strong("Scientific Impact:"),"Advancing the understanding of landslide dynamics and fostering innovation in geosciences."),
+                       #   tags$li(strong("Technological Advancement:"),"Developing robust tools for landslide prediction."),
+                       #   tags$li(strong("Societal Benefit:"),"Reducing susceptibility to landslides, enhancing preparedness, and promoting informed decision-making."),
+                       #   tags$li(strong("Blueprint for Broader Application:"),"Establishing a comprehensive model for other Brazilian municipalities to adapt, utilize and develop further."),
+                       #   tags$li(strong("Collaborative Spirit:")," Inviting partnerships and contributions to enrich and expand the project."),
+                       #   tags$li(strong("Commitment to Ethical Standards:"),"Upholding integrity and transparency, devoid of any financial interests."),
+                       #   tags$li(strong("Data Protection and Privacy:"),"Adhering to data protection regulations with a commitment to privacy. Contact ",
+                       #           a(href="mailto:pedro.lima@univie.ac.at", "Pedro Lima"),
+                       #           " for data-related inquiries."
+                       #   )
+                       # ),
+                       
+                       tags$hr(),
+                       
+                       h3(strong("SDGs: Project potential contributions to the Sustainable Development Goals (SDGs). ")),
+                       
+                       p(strong("Goal 4: Quality Education:"), 
+                         "Enhancing public understanding and integrating landslide susceptibility knowledge into educational programs fosters preparedness and resilience. Additionally, the project is deeply invested in technology and knowlwdge transfer through the active supervision of students. By mentoring the next generation of scientists, we ensure that the state of teh art tools and methodologies developed through our research are passed on effectively."),
+                       p(strong("Goal 9: Industry, Innovation, and Infrastructure:"), 
+                         "The project plays a pivotal role in safeguarding infrastructure, which is a cornerstone for sustainable development. By protecting essential infrastructure from landslide damage, we conserve valuable resources that can then be channeled into other critical services such as education and healthcare. This not only fortifies the physical fabric of our communities but also supports broader societal welfare. Innovation is at the core of our approach; we maintain open repositories and actively publish in journals to ensure that our findings and technological advancements are accessible and can be built upon. This transparency and knowledge sharing are vital for continuous improvement in our field and for inspiring new, cost-effective solutions in disaster risk management and infrastructure resilience."),
+                       p(strong("Goal 10: Reduce inequalities:"), 
+                         "In the Rioslide project, we are acutely aware of the disproportionate impact landslides have on the most vulnerable populations, who are often situated in high-risk areas without the means to safeguard their communities. By identifying these high-susceptible  zones and implementing comprehensive susceptibility maps, we aim to inform urban development and disaster preparedness in a way that prioritizes these communities. Our initiative is not just about reducing the risk of landslides; it's about leveling the playing field. By making the entire city safer, we are actively working to reduce social and economic disparities, ensuring that safety and resilience are not privileges but basic rights for all citizens."),
+                       p(strong("Goal 11: Sustainable Cities and Communities:"), 
+                         "The project significantly enhances urban planning by providing detailed landslide susceptibility maps. These maps are crucial for urban planners and local authorities as they navigate the complexities of urban expansion and development strategies. By identifying areas at high risk for landslides, we enable city planners to make informed decisions about where to build and how to design communities that are both safe and sustainable. Our work ensures that urban growth is managed in harmony with the natural environment, minimizing risks to human life and property. This proactive approach to urban development supports the creation of resilient communities that can thrive for generations to come."),
+                       p(strong("Goal 13: Climate Action:"), 
+                         "In the face of escalating climate-related challenges, the Rioslide project is at the forefront of climate action. Our comprehensive mapping of landslide susceptibility is integral to developing robust climate change adaptation strategies. By understanding the intricate dynamics of extreme weather events and their impact on landslide patterns, we are paving the way for communities to be better prepared for the future. Our work not only contributes to immediate mitigation efforts but also enhances our collective understanding of how climate change influences geological phenomena. This knowledge is crucial for shaping policies and practices that ensure long-term resilience against the unpredictable nature of our changing climate, safeguarding communities and ecosystems alike."),
+                       p(strong("Goal 15: Life on Land:"), 
+                         "In the densely populated urban landscape of Rio, the Rioslide project plays a vital role in harmonizing societal and environmental well-being. By pinpointing areas prone to landslides, our project not only aims to protect human communities but also to minimize disruptions to the local ecosystems. Recognizing the interconnectedness of urban and natural environments, especially in a bustling city like Rio, we are committed to informing land management strategies that respect and preserve the urban biodiversity. This mindful approach seeks to ensure that as the city grows and develops, it does so in a way that maintains the ecological harmony essential for the flourishing of both human and natural communities."),
+                       p(strong("Goal 16: Peace, Justice and strong institutions:"), 
+                         "The Rioslide project is acutely aware of the socio-economic disparities that make the most vulnerable communities disproportionately affected by landslides. Our initiative goes beyond technical mapping; it seeks to address these inequalities by providing equitable solutions in disaster risk management. By enhancing the safety of all sectors within urban areas, particularly those historically underserved, we contribute to reducing inequalities. Ensuring that every community has access to the same level of protection and resources for landslide preparedness not only makes our cities safer but also fosters a more inclusive environment where everyone has the opportunity to thrive."),
+                       p(strong("Goal 17: Partnerships for the Goals:"), 
+                         "Fostering partnerships to unify researchers, policymakers (from the municipality to the national level), and communities in landslide susceptibility work."),
+                       div(style = "text-align: center;", img(src = "SDGs.jpg", height = "500px")),
+                       
+                       tags$hr(),
+                       #div(style = "text-align: center;", img(src = "Proj_partners.jpg", height = "100px")),
+                       h3(strong("Acknowledgement:")),
+                       p("While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq) and relates to the process number 234815/2014-0. The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives."),
+                       div(style = "text-align: center;", img(src = "CNPq.png", height = "150px")),
+                       p("Furthermore, we extend our gratitude to the Instituto Pereira Passos (IPP) and the Fundação Instituto de Geotécnica (GEO-RIO) for their invaluable data and support. Their contributions have been essential to the advancement of our research and the achievement of our project's objectives. We acknowledge the significance of their partnership in fostering scientific and technological development within our community."),
+                       
+              ),
+               # tabPanel("Timeline & Development plan",
+               #          # Content for the Input data overview tab
+               #          div(style = "text-align: center;", 
+               #              img(src = "methods.jpg", height = "300px", style = "filter: grayscale(100%);"))
+               #          ,
+               # ),
                
                # Tab for Interesting Links
                tabPanel("Interesting Links",
@@ -1163,6 +1232,72 @@ server <- function(input, output, session) {
     m2  # Return the leaflet map
     
   })
+  
+  ##############################################################################
+  ##############################################################################
+  ##############################################################################
+  output$map4 <- renderLeaflet({
+    
+    
+    
+    # Your leaflet code, but use 'filtered_data' for the heatmap and markers
+    m4 <- leaflet(slopeUnits,options = leafletOptions(minZoom = 10, maxZoom = 14)) %>%
+      addPolygons(color = "black", fillOpacity = .1, weight = 1) %>%
+      addPolygons(color = ~colorPalette(nslide), fillOpacity = 0.4, weight = 1, group = "Slope Units", 
+                  label = ~paste("Landslides:", nslide), labelOptions = labelOptions(noHide = F, direction = 'auto')) %>%
+      addLegend("bottomright", pal = colorPalette, values = ~nslide,
+                title = "nslide") %>%
+      
+      addCircleMarkers(data = final_rioslides_wgs84, 
+                       radius = 2,      
+                       color = "black",  
+                       stroke = FALSE,  
+                       fillOpacity = .6, group = "Landslides") %>%
+      addProviderTiles(providers$Esri.WorldTopoMap)%>%
+      
+      
+      
+      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
+      #addPolygons(data = Limite_Favelas_2019, color = "gray1", fillOpacity = 0.4, weight = 1, group = "Favelas") %>%
+      
+      addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
+      addScaleBar() %>%
+
+      addLayersControl(
+        baseGroups = c("Base Map"),
+        overlayGroups = c("Landslides", "Slope Units", "Study Area"),
+        options = layersControlOptions(collapsed = FALSE)
+      )%>%
+      
+      # JavaScript to control label visibility based on zoom level
+      htmlwidgets::onRender("
+    function(el, x) {
+      var map = this;
+      map.on('zoomend', function() {
+        var currentZoom = map.getZoom();
+        if (currentZoom < 11 || currentZoom > 14) {
+          $('.leaflet-label').hide();
+        } else {
+          $('.leaflet-label').show();
+        }
+      });
+    }
+  ")
+    
+
+      
+      
+  
+  
+  
+  
+  
+  
+  
+    
+    m4  # Return the leaflet map
+    
+  })
 
   observeEvent(input$image_clicked, {
     image_path <- input$image_clicked
@@ -1225,29 +1360,3 @@ server <- function(input, output, session) {
 shinyApp(ui = ui, server = server)
 
 
-
-
-# # Your leaflet code
-# m <- leaflet(options = leafletOptions(minZoom = 9, maxZoom = 12)) %>%
-#   addTiles() %>% leafem:: addMouseCoordinates()%>%
-#   leaflet.extras::addHeatmap(data = st_coordinates(final_rioslides_wgs84), max = 30, radius = 10, blur = 10) %>%
-#   addCircleMarkers(data = final_rioslides_wgs84, 
-#                    radius = 1/2,      # adjust as desired
-#                    color = "blue",  # adjust as desired
-#                    stroke = FALSE,  # to remove the border
-#                    fillOpacity = .9) %>%
-#   addProviderTiles(providers$CartoDB.Positron) %>%
-#   addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
-#   
-#   addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
-#   addScaleBar()
-# 
-# # Save the map and screenshot
-# mapview::mapshot(m, url = "D:/PROslide_RIO/Figs/invent_heatmap_pts.html")
-# webshot::webshot("D:/PROslide_RIO/Figs/invent_heatmap.png")
-
-################################################################################
-################################################################################
-################################################################################
-################################################################################
-################################################################################

@@ -16,7 +16,7 @@ reclassify(pred, rcl, filename="E:/PROslide_RIO/DATA2/pred_megam_class.tif", ove
 pred_class = raster("E:/PROslide_RIO/DATA2/pred_megam_class.tif")
 
 # Read the shapefile using sf package
-rioslides <- sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+rioslides <- sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 
 rioslides <- rioslides %>%
   dplyr::filter(tipologia1 == 1 | tipologia2 == 1 | tipologia3 == 1 | tipologia4 == 1)

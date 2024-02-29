@@ -28,7 +28,7 @@ source("2_slidesXsusc.R")
 source("20_pred_GAM_per_bairro.R")
 source("20_pred_GAM_NUMERICAL_per_bairro.R")
 source("20_pred_per_bairro.R")     
-
+source("21_slopeunits.R")
 
 source("CTRL-T\CTRL-T_code.R")
 

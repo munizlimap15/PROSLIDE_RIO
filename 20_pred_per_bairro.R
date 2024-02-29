@@ -53,6 +53,8 @@ pred = raster("D:/PROslide_RIO/Susc_heuristic/suscetibilidade_rio.tif")
 
 
 points <- st_read("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/landslides_2023_with_pred.shp")#landslides_2023.shp %>% st_transform(st_crs(municip))
+points <- points %>% 
+  distinct(geometry, .keep_all = TRUE)
 # Extract coordinates
 coords <- st_coordinates(points)
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_METADATA>
+  <DATABASE>
+    <FIELDS>
+      <FIELD TYPE="LONGINT">cat</FIELD>
+      <FIELD TYPE="LONGINT">value</FIELD>
+      <FIELD TYPE="STRING">label</FIELD>
+    </FIELDS>
+  </DATABASE>
+  <SOURCE></SOURCE>
+  <HISTORY saga-version="9.3.1">
+    <TOOL library="shapes_polygons" id="23" name="Polygon Generalization">
+      <OPTION type="double" id="THRESHOLD" name="Area Threshold">100000</OPTION>
+      <OPTION type="choice" id="JOIN_TO" name="Join to Neighbour with ..." index="0">largest area</OPTION>
+      <INPUT type="shapes" id="POLYGONS" name="Shapes">
+        <FILE>E:\SlopeUnits_RJ\slopeunits3\slusmooth.shp</FILE>
+      </INPUT>
+      <OUTPUT type="shapes" id="GENERALIZED" name="Generalized Shapes">slusmooth [generalized]</OUTPUT>
+    </TOOL>
+  </HISTORY>
+  <FILE></FILE>
+  <DESCRIPTION></DESCRIPTION>
+  <PROJECTION>
+    <OGC_WKT>PROJCS["SIRGAS_2000_UTM_Zone_23S",GEOGCS["GCS_SIRGAS_2000",DATUM["D_SIRGAS_2000",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",10000000.0],PARAMETER["Central_Meridian",-45.0],PARAMETER["Scale_Factor",0.9996],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]</OGC_WKT>
+    <PROJ4>+proj=utm +a=6378137.000000 +b=6356752.314140 +zone=23 +south +no_defs</PROJ4>
+    <EPSG>-1</EPSG>
+  </PROJECTION>
+</SAGA_METADATA>

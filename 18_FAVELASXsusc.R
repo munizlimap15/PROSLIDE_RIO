@@ -7,9 +7,12 @@ library(dplyr)
 rioslides <- sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 rioslides <- rioslides %>%
   dplyr::filter(tipologia1 == 1 | tipologia2 == 1 | tipologia3 == 1 | tipologia4 == 1)
-study_area          <- st_read("StudyArea.shp")
-Limite_Favelas_2019 <- st_read("Limite_Favelas_2019.shp")
+study_area          <- st_read("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/StudyArea.shp")
+Limite_Favelas_2019 <- st_read("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/Limite_Favelas_2019.shp")
 Limite_Favelas_2019 <- st_simplify(Limite_Favelas_2019, dTolerance = 1)
+Limite_Favelas_2019 <- Limite_Favelas_2019 %>%
+  filter(pop_sabren > 100)
+
 #Limite_Favelas_2019 <- sample_n(Limite_Favelas_2019,2)
 
 
@@ -171,7 +174,7 @@ summary_text <- paste("In the study area, approximately",
                       n_high_pred_megam_class, "high susceptibility landslides. The municipal model (count_) identified",
                       n_low_count, "low,", 
                       n_medium_count, "medium, and", 
-                      n_high_count, "high susceptibility landslides. These findings indicate variation in landslide susceptibility predictions between the two models.")
+                      n_high_count, "high susceptibility landslides.")
 # Print summary text
 print(summary_text)
 
@@ -367,12 +370,12 @@ gg_DD2=ggplot(na.omit(pixel_counts_pred2), aes(x="", y=Percentage, fill=factor(S
 ################################################################################
 ################################################################################
 # Open a graphics device to save the plot
-png("D:/PROslide_RIO/Figs/Susc_official_favelas_1508_930.png", width = 1508, height = 930, units = "px")
+png("D:/PROslide_RIO/Figs/Susc_official_favelas_1508_930_b.png", width = 1508, height = 930, units = "px")
 # Draw the main plot
 print(gg_Municip)
 
 # Define a viewport for the inset plot
-vp <- viewport(x = 0, y = 0.9, width = 0.5, height = 0.5, just = c("left", "top"))
+vp <- grid::viewport(x = 0, y = 0.9, width = 0.5, height = 0.5, just = c("left", "top"))
 
 # Print the inset plot in the defined viewport
 print(gg_Municip2+theme(legend.position="none"), vp = vp)
@@ -380,12 +383,12 @@ dev.off()
 ################################################################################
 ################################################################################
 ################################################################################
-png("D:/PROslide_RIO/Figs/Susc_DD_favelas_1508_930.png", width = 1508, height = 930, units = "px")
+png("D:/PROslide_RIO/Figs/Susc_DD_favelas_1508_930_b.png", width = 1508, height = 930, units = "px")
 # Draw the main plot
 print(gg_DD)
 
 # Define a viewport for the inset plot
-vp <- viewport(x = 0, y = 0.9, width = 0.5, height = 0.5, just = c("left", "top"))
+vp <- grid::viewport(x = 0, y = 0.9, width = 0.5, height = 0.5, just = c("left", "top"))
 
 # Print the inset plot in the defined viewport
 print(gg_DD2+theme(legend.position="none"), vp = vp)
