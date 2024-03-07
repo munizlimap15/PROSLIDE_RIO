@@ -3,8 +3,8 @@
 <p align="center">
   <img
     src="/Shinny_app_RioSlide/www/myplot.png"
-    width="258"  
-    height="132"> 
+    width="516"  
+    height="264s"> 
 </p>
 
 <p align="center">
