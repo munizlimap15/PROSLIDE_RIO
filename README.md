@@ -2,7 +2,7 @@
 
 <p align="center">
   <img
-    src="/Shinny_app_RioSlide/www/rioSlide_logo.jpg"
+    src="/Shinny_app_RioSlide/www/myplot.png"
     width="300"  
     height="300"> 
 </p>

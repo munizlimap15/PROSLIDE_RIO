@@ -728,12 +728,13 @@ ui <- fluidPage(
     
     
     # Tab for potential further developments
-    tabPanel("Future Developments",
+    navbarMenu("Future Developments",
+      tabPanel("Landslide runout - potential downslope damage",
              mainPanel(
-               h4("Vision(s) for potential advancement(s)"),
-               p("Beyond predicting where these landslides might happen, it is also worth to establish models able to predict potential areas where these landslides can reach. It is called the runout prt of the landslides, usually located in gentle slopes. Future perspectives might include applying numerical runout modelling to predict these regions. The focus will expand to include not only the initiation of landslides but also their runout characteristics, considering the full path of potential landslides and their impact on communities and infrastructure."),
-               p("One good example of the destructive power of these landslides is the event occured in 1996 and can be observed bellow under multiple perspectives."),
-               p("Fig A illustrates overlay between the satelite imagery, the 1996 landslide and the official landslide susceptibility model. Fig B provides an aerial overview of the terrain and the landslide. Fig C offers a simulation output from a runout model, showcasing the predicted flow paths and deposition zones."),
+               h4("Landslide runout - potential downslope damage"),
+               p("Beyond merely predicting the locations of potential landslides, it's crucial to also develop models that identify areas likely to be affected by the debris flow, referred to as the runout zone, typically found on gentler slopes. Future research could benefit from incorporating numerical runout modeling to pinpoint these areas, a concept explored in recent studies by Mergili et al. (2019), Goetz et al. (2021), and Lima et al. (2023). These studies broaden the scope to consider not just the origin but also the trajectory and impact of landslides on downstream communities and infrastructure."),
+               p("Locations on gentle slopes, often deemed safe from landslides, can indeed suffer from the consequences of upstream landslide activity. The catastrophic potential of such landslides was vividly demonstrated by the rainfall-induced landslide of 1996, which can be analyzed from multiple perspectives."),
+               p("Figure A presents an overlay of the official landslide susceptibility model with satellite imagery and the actual landslide incident. Figure B offers an aerial view of the terrain affected by the landslide, highlighting the impact on residential areas situated downslope. Figure C demonstrates a numerical simulation from a runout model using R.avaflow (Mergili et al., 2019), illustrating predicted flow paths and deposition zones."),
                
                # Placeholder for the image
                div(
@@ -741,26 +742,26 @@ ui <- fluidPage(
                  div(
                    style = "margin-right: 10px; text-align: center;", # Right margin for spacing between images and centering text
                    img(src = "1996.png", height = "500px", alt = "Conceptual Diagram"),
-                   p(style = "color: grey; font-size: 80%; text-align: justify;","Landslide and the prediction map.", style="margin-top: 5px;") # Caption for the first image
+                   p(style = "color: grey; font-size: 80%; text-align: justify;","A: Landslide and the prediction map.", style="margin-top: 5px;") # Caption for the first image
                  ),
                  div(
                    style = "display: flex; justify-content: center; align-items: flex-start;", # This container will hold the image-captions pairs
                    div(
                      style = "margin-right: 10px; text-align: center;", # Right margin for spacing between images and centering text
                      img(src = "1996_2.png", height = "500px", alt = "Conceptual Diagram"),
-                     p(style = "color: grey; font-size: 80%; text-align: justify;","Landslide and the topography.", style="margin-top: 5px;") # Caption for the first image
+                     p(style = "color: grey; font-size: 80%; text-align: justify;","B: Landslide and the topography.", style="margin-top: 5px;") # Caption for the first image
                    ),
                  div(
                    style = "text-align: center;", # Centering text for the second image caption
                    img(src = "Pedro2_hflow_map.gif", height = "500px", alt = "Conceptual Diagram"),
-                   p(style = "color: grey; font-size: 80%; text-align: justify;","r.avaflow simulation. Source: Lima, P.(unpublished)", style="margin-top: 5px;") # Caption for the second image
+                   p(style = "color: grey; font-size: 80%; text-align: justify;","C: r.avaflow simulation. Source: Lima, P.(unpublished)", style="margin-top: 5px;") # Caption for the second image
                  ))),
                # Placeholder for the passage from your paper
-               p("Looking ahead at the evolution of landslide analysis, imagine a future where we can predict not just when and where landslides might start, but also trace their path down to the more level grounds next to the hills where they begin. These often-neglected flat areas are just as important to consider for a complete picture of how landslides affect the landscape.
+               p("Acknowledging the current state of advancements in landslide analysis, we now have the capacity to not only predict where and when landslides might initiate but also to delineate their pathways down to the gentler slopes beyond their points of origin.  These often-neglected flat areas are just as important to consider for a complete picture of how landslides affect the landscape.
                Building on the ideas from Mergili et al. (2019) and Lima et al. (2023), we could one day use advanced simulation tools to map out where landslides may go, especially in regions where the land flattens out. These tools would help us understand not only the likely areas of landslide travel but also the extent of their influence on communities and the environment.
                  This future idea, while still a concept, proposes a full-circle method for predicting landslides. It's about looking at the entire journey of a landslide—from its powerful start on a hilltop to its final reach into gentler lands below—ensuring that we have a complete understanding of its movement. This way, we can better prepare for and adapt to the way landslides reshape our world, without focusing solely on the places where they're most likely to begin."),
               
-               )
+               ))
     ),
     
     
@@ -774,7 +775,7 @@ ui <- fluidPage(
                
               tabPanel("Input data overview",
                        # Content for the Input data overview tab
-                       div(style = "text-align: center;", img(src = "dados.png", height = "1000px")),
+                       div(style = "text-align: center;", img(src = "dados.png", height = "800px")),
               ),
               # Outreach Panel
                tabPanel("Outreach, transparency",
@@ -1005,7 +1006,7 @@ ui <- fluidPage(
                
                # Tab for Interesting Links
                tabPanel("Interesting Links",
-                        h4("Explore these valuable resources:"),
+                        #h4("Explore these valuable resources:"),
                         
                         # Link 1
                         h5("Landslide Susceptibility - Data.Rio"),
@@ -1014,15 +1015,15 @@ ui <- fluidPage(
                         ),
                         
                         # Link 2
-                        h5("Risk of Mass Movement Accidents (PDF)"),
-                        tags$ul(
-                          tags$li(a("This PDF document contains information about the risk of mass movement accidents.", href = "https://www.rio.rj.gov.br/documents/11235825/11236874/RISCO_DE_ACIDENTES_ASSOCIADOS_A_CORRIDAS_DE_MASSA.pdf", target = "_blank"))
-                        ),
+                        # h5("Risk of Mass Movement Accidents (PDF)"),
+                        # tags$ul(
+                        #   tags$li(a("This PDF document contains information about the risk of mass movement accidents.", href = "https://www.rio.rj.gov.br/documents/11235825/11236874/RISCO_DE_ACIDENTES_ASSOCIADOS_A_CORRIDAS_DE_MASSA.pdf", target = "_blank"))
+                        # ),
                         
                         # Link 3
                         h5("Favela Boundaries 2019 - Data.Rio"),
                         tags$ul(
-                          tags$li(a("Explore data on the boundaries of favelas in Rio de Janeiro.", href = "https://www.data.rio/datasets/PCRJ::limite-favelas-2019/about", target = "_blank"))
+                          tags$li(a("Data of the favelas boundaries in Rio de Janeiro.", href = "https://www.data.rio/datasets/PCRJ::limite-favelas-2019/about", target = "_blank"))
                         ),
                         
                         # Link 4
@@ -1040,7 +1041,7 @@ ui <- fluidPage(
                         # Link 6
                         h5("Alerta Rio"),
                         tags$ul(
-                          tags$li(a("Visit the Alerta Rio website for real-time information on weather and natural disasters in Rio de Janeiro.", href = "http://alertario.rio.rj.gov.br/", target = "_blank"))
+                          tags$li(a("Visit the Alerta Rio website for real-time weather information for Rio de Janeiro.", href = "http://alertario.rio.rj.gov.br/", target = "_blank"))
                         )
                ),
                
@@ -1050,21 +1051,21 @@ ui <- fluidPage(
                         h4("Student 1"),
                         p("Name: Guilherme Damasceno Raposo"),
                         p("Institution: Universidade do Estado do Rio de Janeiro, Department of Cartographic Engineering."),
-                        p("Supervisors: Prof. Dr. Luiz Carlos Teixeira Coelho; Dr. Pedro Lima"),
-                        p("Working Title: TBA"),
+                        p("Supervisors: Prof. Dr. Luiz Carlos Teixeira Coelho (UERJ); Dr. Pedro Lima  (Universität Wien)"),
+                        p("Working Title: 'Avaliação de susceptibilidade a deslizamentos no município do Rio de Janeiro por combinação de métodos data-driven, aliados à análise tridimensional geomorfológica'"),
                         
                         # Fake student 2
-                        h4("Student 2"),
-                        p("Name: --"),
-                        p("Institution: ---"),
-                        p("Supervisors: Prof. Dr. Luiz Carlos Teixeira Coelho; Dr. Pedro Lima"),
-                        p("Working Title: TBA"),
+                        h4("--------------------------------------------------"),
+                        p("Name: Luiz Henrique de Carvalho Freires"),
+                        p("Institution: Mestrado em Engenharia Urbana – Escola Politécnica - UFRJ"),
+                        p("Supervisors: Prof. Fernando Rodrigues Lima (UFRJ); Prof. Dr. Luiz Carlos Teixeira Coelho (UERJ); Dr. Pedro Lima  (Universität Wien)"),
+                        p("Working Title: 'Metodologia multicritério para avaliação de suscetibilidade a deslizamentos no município de Areal-RJ'"),
                         
-                        # Fake student 3
+                        # Fake student 3; 
                         h4("Student 3"),
                         p("Name: Alejandro Serrano Acevedo"),
                         p("Institution: Universidad de Chile"),
-                        p("Supervisors: Prof. Dr. Luiz Carlos Teixeira Coelho; Dr. Pedro Lima"),
+                        p("Supervisors: Prof. Dr. Luiz Carlos Teixeira Coelho (UERJ); Dr. Pedro Lima (Universität Wien)"),
                         p("Working Title: TBA")
                ),
                
@@ -1243,6 +1244,7 @@ server <- function(input, output, session) {
     # Your leaflet code, but use 'filtered_data' for the heatmap and markers
     m4 <- leaflet(slopeUnits,options = leafletOptions(minZoom = 10, maxZoom = 14)) %>%
       addPolygons(color = "black", fillOpacity = .1, weight = 1) %>%
+      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
       addPolygons(color = ~colorPalette(nslide), fillOpacity = 0.4, weight = 1, group = "Slope Units", 
                   label = ~paste("Landslides:", nslide), labelOptions = labelOptions(noHide = F, direction = 'auto')) %>%
       addLegend("bottomright", pal = colorPalette, values = ~nslide,
@@ -1254,11 +1256,6 @@ server <- function(input, output, session) {
                        stroke = FALSE,  
                        fillOpacity = .6, group = "Landslides") %>%
       addProviderTiles(providers$Esri.WorldTopoMap)%>%
-      
-      
-      
-      addPolygons(data = study_area_wgs84, color = "black", fillOpacity = 0, weight = 3) %>%
-      #addPolygons(data = Limite_Favelas_2019, color = "gray1", fillOpacity = 0.4, weight = 1, group = "Favelas") %>%
       
       addMiniMap(position = "topleft", tiles = providers$OpenStreetMap.Mapnik, toggleDisplay = TRUE) %>%
       addScaleBar() %>%
