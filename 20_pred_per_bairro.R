@@ -184,7 +184,7 @@ for (i in 1:length(district_grouped$rp)) {
   GG_municip = ggplot(percentages_long, aes(x = District, y = Percentage, fill = Category)) +
     geom_bar(stat = "identity", position = "fill", width = 0.3, color= "darkgray", alpha = 0.4) +
     scale_fill_manual(
-      values = c("High" = "red", "Medium" = "yellow", "Low" = "#008000"),
+      values = c("High" = "red", "Medium" = "black", "Low" = "#008000"),
       name = "Categories", 
       labels = c("High", "Medium", "Low")
     ) +
@@ -220,7 +220,7 @@ for (i in 1:length(district_grouped$rp)) {
     ggnewscale::new_scale_fill()+
     
     geom_raster(data= na.omit(pred_df), aes(x = x,  y = y, fill = Susceptibility),alpha=0.4)+
-    scale_fill_manual(values = c("#008000", "yellow", "red")) +
+    scale_fill_manual(values = c("#008000", "black", "red")) +
     ggnewscale::new_scale_fill()+
     
     
@@ -343,7 +343,7 @@ for (i in 1:length(district_grouped$rp)) {
   
   
   # Save the figure as a PNG file
-  filename <- paste0(i, "_", save_name, ".png")
+  filename <- paste0(i, "_", save_name, "2222.png")
   ggsave(filename, plot2, width = 12, height = 9)
   # Print the filename for reference
   cat("Saved:", filename, "\n")

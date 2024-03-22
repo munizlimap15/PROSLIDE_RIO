@@ -7,9 +7,9 @@ library(mapview)
 
 
 
-RJ = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/StudyArea.shp")
+RJ = sf::st_read("D:/PROslide_RIO/DATA/StudyArea.shp")
 
-rioslides = sf::st_read("C:/Users/pedro/Documents/PROslide_RIO/DATA/landslides_2023.shp")
+rioslides = sf::st_read("D:/PROslide_RIO/DATA/landslides_2023.shp")
 summary(as.factor(rioslides$tipologia1))
 #0    1    2    3    4    5    6    7    8    9   10   11 
 #59 1659   32   25    1  323   55  449   12   71  155  157 
@@ -104,7 +104,7 @@ gg=rioslides %>%
   coord_flip() # Flip the axes
 
 
-png("E:/PROslide_RIO/PRESENTATIONS/plot_year_month.png", width = 750, height = 1150)
+png("D:/PROslide_RIO/PRESENTATIONS/test_today.png", width = 750, height = 1150)
 print(gg)
 dev.off()
 
