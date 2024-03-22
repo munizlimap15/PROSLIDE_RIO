@@ -99,7 +99,7 @@ writeRaster(combined_flat_areas_majority5, "E:/SlopeUnits_RJ/combined_flat_areas
 
 
 # This ons was generalized by the "Polygon generalization" tool from SAGA 
-slope_units <- st_read("E:/SlopeUnits_RJ/slopeunits3/slusmooth_gen.shp")
+slope_units <- sf::st_read("E:/SlopeUnits_RJ/slopeunits3/slusmooth_gen.shp")
 
 # Check for validity and make valid if necessary
 slope_units <- st_buffer(slope_units, 0)
