@@ -101,63 +101,129 @@ rioslides   <- merge(rioslides_spdf_extract,   rioslides,   by.x = 'ID', by.y = 
 names(rioslides)[names(rioslides) == "count_"] <- "suscetibilidade_rio"
 # Select only the specified columns using dplyr's select
 rioslides <- dplyr::select(rioslides, suscetibilidade_rio, ID, geometry, year, has_date)
-st_write(rioslides, "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/landslides_2023_with_pred.shp", overwrite= TRUE, append=TRUE)
+#st_write(rioslides, "D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/landslides_2023_with_pred.shp", overwrite= TRUE)
 
 rioslides <- rioslides[rioslides$suscetibilidade_rio != 255, ]
 
-summary(as.factor(rioslides$suscetibilidade_rio))
-
-Summary<- rioslides %>%
-  dplyr::group_by(suscetibilidade_rio)%>%
+Summary <- rioslides %>%
+  dplyr::group_by(suscetibilidade_rio) %>%
   dplyr::summarise(n_slide = n())
-
 
 pred_recode <- c("1" = "Low",
                  "2" = "Medium",
                  "3" = "High")
 
+Summary$suscetibilidade_rio = as.character(Summary$suscetibilidade_rio)
+Summary$pred_recode <- as.character(pred_recode[Summary$suscetibilidade_rio])
 
-Summary$suscetibilidade_rio=as.character(Summary$suscetibilidade_rio)
-Summary$pred_recode      <- as.character(pred_recode  [Summary$suscetibilidade_rio])
+Summary$pred_recode <- factor(Summary$pred_recode, levels = c("Low", "Medium", "High"))
 
-Summary$pred_recode <- factor(Summary$pred_recode, levels=c("Low", "Medium", "High"))
+# Add area coverage percentages
+area_coverage <- c("Low" = 59, "Medium" = 29, "High" = 12)
+Summary$area_coverage <- area_coverage[Summary$pred_recode]
 
-gg=ggplot(Summary) +
-  aes(x = pred_recode, weight = n_slide, fill = pred_recode) + # Added fill inside aes
-  geom_bar(color="black") +
-  scale_fill_manual(values = alpha(c('Low' = "white", 'Medium' = "#EFC000FF", 'High' = "darkorange1"), 0.7)) +
-  theme_minimal()+
-  geom_text(aes(label = n_slide, y = n_slide / 2), vjust = -0.5) + # Adding the text
-  labs(title = "", y="N slides", x="Prediction Categories",
-       #caption = "Aqui, apenas os pontos citados como 'Escorregamento de solo' foram usados (Tipologia = 1). Esses mesmos somam 1656 ocorrencias.")+
-       caption = "Only the obs mentioned as 'shallow landslides' were used (Typology = 1).")+
-  theme(legend.position = "none",
-        text = element_text(size=18),
-        plot.caption = element_text(face = "italic", size=10, color="gray40"))
+# Create pie chart for area coverage
+area_coverage_df <- data.frame(
+  class = names(area_coverage),
+  percentage = area_coverage
+)
+library(ggplot2)
+library(gridExtra)
+library(cowplot)
+
+# Define a common theme for both plots with increased font sizes
+bar_theme <- theme(
+  plot.title = element_text(size = 28, face = "bold"),  # Increased more from 24 to 28
+  axis.title.x = element_text(size = 22),  # Increased more from 18 to 22
+  axis.title.y = element_text(size = 22),  # Increased more from 18 to 22
+  axis.text.x = element_text(size = 18),  # Increased more from 14 to 18
+  axis.text.y = element_text(size = 18),  # Increased more from 14 to 18
+  legend.text = element_text(size = 22),  # Increased more from 18 to 22
+  legend.title = element_text(size = 22)  # Increased more from 18 to 22
+)
+
+pizza_theme <- theme(
+  plot.title = element_text(size = 28, face = "bold"),  # Increased more from 24 to 28
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  axis.text.x = element_blank(),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  legend.text = element_text(size = 22),  # Increased more from 18 to 22
+  legend.title = element_text(size = 22),  # Increased more from 18 to 22
+  legend.position = "bottom"
+)
+
+# Filter out NA from Summary data
+Summary <- Summary %>%
+  filter(!is.na(pred_recode))
+
+# Order the levels of the factor for filling
+area_coverage_df$class <- factor(area_coverage_df$class, levels = c("Low", "Medium", "High"))
+Summary$pred_recode <- factor(Summary$pred_recode, levels = c("Low", "Medium", "High"))
+
+# Define colors with transparency
+colors_with_alpha <- c('Low' = alpha("#3e961b", 0.5), 'Medium' = alpha("#eaea44", 0.5), 'High' = alpha("#c1435d", 0.5))
+
+# Create pie chart for area coverage
+gg_area_coverage <- ggplot(area_coverage_df, aes(x = "", y = percentage, fill = class)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(name = "Susceptibility class:", values = colors_with_alpha) +
+  labs(title = "(A) Area Coverage by Susceptibility Class") +
+  geom_text(aes(label = paste0(percentage, "%")), position = position_stack(vjust = 0.5), size = 8) +  # Further increased size of labels
+  pizza_theme +
+  theme(legend.position = "none")
+
+# Create bar chart for number of landslides
+gg_landslides <- ggplot(Summary, aes(x = pred_recode, y = n_slide, fill = pred_recode)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = n_slide), vjust = 5, size = 8) +  # Add labels to the bars
+  scale_fill_manual(name = "Susceptibility class:", values = colors_with_alpha) +
+  labs(title = "(B) Number of Landslides by Susceptibility Class", x = "Susceptibility Class", y = "Number of Landslides") +
+  bar_theme +
+  theme(legend.position = "none")
+
+# Extract the legend from the pie chart
+legend <- cowplot::get_legend(gg_area_coverage + theme(legend.position = "bottom", legend.direction = "horizontal"))
+
+# Arrange the plots side by side with a common legend below
+combined_plot <- plot_grid(
+  gg_area_coverage, gg_landslides, 
+  ncol = 2, rel_widths = c(1, 1)
+)
+combined_plot_with_legend <- plot_grid(combined_plot, legend, ncol = 1, rel_heights = c(1, 0.1), align = 'v')
+
+# Add the caption
+final_plot <- ggdraw() +
+  draw_plot(combined_plot_with_legend, 0, 0.1, 1, 0.9) 
+
+# Save the final plot as an image
+#ggsave("D:/PROslide_RIO/PRESENTATIONS/A_heur_combined_plot.png", plot = final_plot, width = 20, height = 9)
+#ggsave("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/www/A_heur_combined_plot.png", plot = final_plot, width = 10, height = 4)
+ggsave("D:/PROslide_RIO/Figs/A_heur_combined_plot.png", plot = final_plot, width = 20, height = 9)
 
 
-png("E:/PROslide_RIO/PRESENTATIONS/plot2.png", width = 500, height = 400)
-print(gg)
-dev.off()
-
-gg=ggplot(Summary) +
-  aes(x = pred_recode, weight = n_slide, fill = pred_recode) + # Added fill inside aes
-  geom_bar(color="black") +
-  scale_fill_manual(values = alpha(c('Low' = "#008000", 'Medium' = "yellow", 'High' = "red"), 0.7)) +
-  theme_minimal()+
-  geom_text(aes(label = n_slide, y = n_slide / 2), vjust = -0.5) + # Adding the text
-  labs(title = "", y="N slides", x="Prediction Categories",
-       #caption = "Aqui, apenas os pontos citados como 'Escorregamento de solo' foram usados (Tipologia = 1). Esses mesmos somam 1656 ocorrencias.")+
-       #caption = "Only the obs mentioned as 'shallow landslides' were used (Typology = 1)."
-       )+
-  theme(legend.position = "none",
-        text = element_text(size=18),
-        plot.caption = element_text(face = "italic", size=10, color="gray40"))
 
 
-png("D:/PROslide_RIO/Rcodes/Shinny_app_RioSlide/plot2.png", width = 500, height = 400)
-print(gg)
-dev.off()
+
+combined_plot_one_above_other <- plot_grid(
+  gg_area_coverage, gg_landslides, 
+  ncol = 1, rel_heights = c(1, 1)
+)
+combined_plot_one_above_other_with_legend <- plot_grid(combined_plot_one_above_other, legend, ncol = 1, rel_heights = c(1, 0.1), align = 'v')
+
+# Save the one above the other combined plot as an image
+ggsave("D:/PROslide_RIO/Figs/A_heur_combined_plot_b.png", plot = combined_plot_one_above_other_with_legend, width = 10, height = 18)
+
+
+
+
+
+
+
+
+
 
 
 

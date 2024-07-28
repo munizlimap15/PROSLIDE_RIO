@@ -723,7 +723,7 @@ ui <- fluidPage(
     tabPanel("Slope units",
              h3("Slope Units"),
              mainPanel(
-                 leafletOutput("map4", width = "100%", height = "600px"),
+                 leafletOutput("map4",  height = "800px"),
                  p(style = "color: grey; font-size: 80%; text-align: justify;",
                    "This map provides an insightful visualization of slope units (SUs) distinguished by color gradients, which now reflect the number of landslides (nslide) recorded in each unit. The subset displayed are only the one containig signifivant amount of non-flat terrain (significant topographic variation). In the context of landslide susceptibility prediction, flat terrain, also denimonated as 'trivial terrain' (Steger et al., 2017) should not represented as it typically holds little to no likelihood for such events to happen. By focusing on areas with significant topographical variations, the map targets regions of heightened relevance to landslide analysis, excluding flat terrains which typically present minimal landslide occurence potential. It's important to note that for data protection and privacy considerations, the map's zoom levels are managed to ensure a balance between providing useful information and safeguarding sensitive data. Precise locations are generalized to comply with data protection standards, ensuring the privacy of potentially affected areas.",
                    ),
