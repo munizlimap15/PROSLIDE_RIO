@@ -51,8 +51,8 @@ str(final_train)
 # Assuming final_train is your data frame and slide is your response variable
 # Make sure to replace 'final_train' and 'slide' with your actual data frame and response variable names
 
-fo1 <- slide ~ s(dtm) + s(plan_curv) + s(prof_curv) + s(rel_slp_position) + s(slope) + s(twi) + # Numerical
-  landcover + geomorph #+ geol #+ aspect + tpi                                                  # Categorical
+fo1 <- slide ~ s(dtm) + s(plan_curv) + s(prof_curv) + s(rel_slp_position) + s(slope) + s(twi) #+ # Numerical
+  #landcover + geomorph #+ geol #+ aspect + tpi                                                  # Categorical
  
 # Fit the GAM model
 gam_fit <- gam(fo1, data = final_train, family = binomial)
@@ -125,12 +125,17 @@ variable_importance_df <- data.frame(
 )
 
 # Create a bar chart for Delta_AUC
-ggplot(variable_importance_df, aes(x = reorder(Variable, -Delta_AUC), y = Delta_AUC)) +
+gg=ggplot(variable_importance_df, aes(x = reorder(Variable, -Delta_AUC), y = Delta_AUC)) +
   geom_bar(stat = "identity", fill = "blue") +
   coord_flip() +
   ggtitle("Variable Importance Based on Delta_AUC") +
   xlab("Variables") +
   ylab("Delta_AUC")
+
+png("D:/PROslide_RIO/Figs/variable_importance_2024.png", width = 1000, height = 900)
+print(gg)
+dev.off()
+
 
 # Create a bar chart for AIC
 ggplot(variable_importance_df, aes(x = reorder(Variable, AIC), y = AIC)) +

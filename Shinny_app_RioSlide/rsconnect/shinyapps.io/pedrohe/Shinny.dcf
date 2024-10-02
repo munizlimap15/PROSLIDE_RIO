@@ -5,9 +5,9 @@ account: pedrohe
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10984122
-bundleId: 8333111
+bundleId: 8379677
 url: https://pedrohe.shinyapps.io/Shinny/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData|write-test-3e1d7e34-efab-4a60-92b3-7a71fabe8c54
+ignoredFiles: .RData|landslides_2023_with_pred.dbf|landslides_2023_with_pred.prj|landslides_2023_with_pred.shp|landslides_2023_with_pred.shx|Limite_Favelas_2019.cpg|Limite_Favelas_2019.dbf|Limite_Favelas_2019.prj|Limite_Favelas_2019.shp|Limite_Favelas_2019.shx|slusmooth_gen.dbf|slusmooth_gen.mshp|slusmooth_gen.prj|slusmooth_gen.shp|slusmooth_gen.shx|slusmooth_gen_subset.dbf|slusmooth_gen_subset.prj|slusmooth_gen_subset.shp|slusmooth_gen_subset.shx|stations.dbf|stations.prj|stations.shp|stations.shx|study_area_image.png|StudyArea.dbf|StudyArea.prj|StudyArea.sbn|StudyArea.sbx|StudyArea.shp|StudyArea.shx|suscetibilidade_DD_rio.tif|suscetibilidade_rio.tif|write-test-3e1d7e34-efab-4a60-92b3-7a71fabe8c54

@@ -13,6 +13,7 @@ rainfall_raster_directory <- "D:/PROslide_RIO/DATA2/rain_rasters4/"
 plot_output_directory <- "D:/PROslide_RIO/Figs/PLOTS/"
 
 # Read landslide data
+
 rioslides <- sf::st_read(paste0(landslide_data_directory, "final_rioslides.shp"))
 landslide_dates <- unique(rioslides$data)
 landslide_dates <- na.omit(landslide_dates)

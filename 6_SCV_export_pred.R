@@ -7,11 +7,13 @@ library(tidyr)
 library(raster)
 library(RSAGA)
 library(glmnet)
+library(ggplot2)
+library(patchwork)
 
-setwd("E:/PROslide_RIO/DATA2")
+setwd("D:/PROslide_RIO/DATA2")
 
 # Load the training dataset
-load("E:/PROslide_RIO/DATA/final_train.Rd")
+load("D:/PROslide_RIO/DATA/final_train.Rd")
 
 # Remove rows where slide == TRUE and slope <= 5
 final_train_t <- final_train %>%
@@ -19,7 +21,7 @@ final_train_t <- final_train %>%
 
 # Remove rows where slide == TRUE and slope <= 5
 final_train_f <- final_train %>%
-  filter(!(slide == FALSE)) %>% sample_n(nrow(final_train_t))
+  filter((slide == FALSE)) %>% sample_n(nrow(final_train_t))
 
 final_train=rbind(final_train_f, final_train_t)
 
@@ -88,15 +90,102 @@ fo1 <- slide ~ s(dtm) + s(prof_curv) + s(slope) + landcover19 + geomorph + geol 
 # Fit the GAM model
 gam_fit <- gam(fo1, data = final_train, family = binomial)
 
-# Perform cross-validation using sperrorest
-cv1 = sperrorest(formula=fo1, data=final_train, coords=c("x","y"),
-                 model_fun= gam, model_args = list(family=binomial),
-                 pred_args=list(type="response"), 
-                 smp_fun=partition_cv, smp_args=list(repetition=25, nfold=5, seed1 = 1))
+# Perform 25-fold cross-validation using sperrorest
+cv1 <- sperrorest(
+  formula = fo1, data = final_train, coords = c("x", "y"),
+  model_fun = gam, model_args = list(family = binomial),
+  pred_args = list(type = "response"), 
+  smp_fun = partition_cv, smp_args = list(repetition = 5, nfold = 25, seed1 = 1)
+)
+
+# Display the structure of cv1
+str(cv1)
 
 # Display AUROC results
 summary(mean(cv1$error_rep$test_auroc))
 mean(cv1$error_rep$test_auroc)
+
+# Extract the test AUROC values
+test_auroc_values <- cv1$error_rep$test_auroc
+
+# Calculate the median AUROC value
+median_auroc <- median(test_auroc_values)
+
+# Extract true labels for each fold
+true_labels_list <- lapply(1:25, function(i) {
+  test_indices <- cv1$represampling[[1]][[i]]$test
+  final_train$slide[test_indices]
+})
+
+# Regenerate the predictions for each fold
+predicted_probs_list <- lapply(1:25, function(i) {
+  test_indices <- cv1$represampling[[1]][[i]]$test
+  test_data <- final_train[test_indices, ]
+  
+  # Generate predictions using the fitted model
+  predict(gam_fit, newdata = test_data, type = "response")
+})
+
+# Ensure predictions and true labels match in length
+if (length(predicted_probs_list) != length(true_labels_list)) {
+  stop("Mismatch between the number of folds in predictions and true labels.")
+}
+
+# Generate ROC curves for each fold and smooth them
+roc_curves <- lapply(1:25, function(i) {
+  true_labels <- true_labels_list[[i]]
+  predicted_probs <- predicted_probs_list[[i]]
+  
+  # Generate ROC curve and smooth it
+  roc_curve <- roc(true_labels, predicted_probs)
+  smooth(roc_curve)
+})
+
+# Find the ROC curve closest to the median AUROC
+median_roc_curve <- roc_curves[[which.min(abs(test_auroc_values - median_auroc))]]
+
+# Extract data for all ROC curves
+roc_data_list <- lapply(roc_curves, function(roc) {
+  as.data.frame(roc[c("specificities", "sensitivities")])
+})
+
+# Combine all ROC data into one dataframe
+roc_data <- bind_rows(roc_data_list, .id = "fold")
+
+# Extract data for the median ROC curve
+median_roc_data <- as.data.frame(median_roc_curve[c("specificities", "sensitivities")])
+
+# Plot ROC curves
+roc_plot <- ggplot() +
+  geom_line(data = roc_data, aes(x = 1 - specificities, y = sensitivities, group = fold), color = "gray") +
+  geom_line(data = median_roc_data, aes(x = 1 - specificities, y = sensitivities), color = "black", size = 1.2) +
+  
+  labs(x = "False Positive Rate", y = "True Positive Rate") +
+  ggtitle("Smoothed ROC Curves for 25-fold Cross-Validation") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 20),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 20),
+    legend.text = element_text(size = 18),
+    legend.title = element_text(size = 18)
+  ) +
+  
+  annotate("text", x = 0.5, y = 0.1, label = paste("Median AUROC=", round(median_auroc, 1)), size = 8, color = "black")
+
+# Display the plot
+print(roc_plot)
+
+png("D:/PROslide_RIO/Figs/roc_plot.png", width = 1000, height = 900)
+print(roc_plot)
+dev.off()
+
+
+
+
+
+
+
+
 
 # Apply the model to multiple raster layers
 multi.local.function(

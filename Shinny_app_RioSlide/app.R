@@ -8,20 +8,48 @@ library(viridis)
 library(classInt)
 
 
+# library(sf)
+# library(raster)
+# 
+# # Define the function to save processed spatial objects
+# save_processed_data <- function() {
+#   final_rioslides <- st_read("landslides_2023_with_pred.shp")
+#   study_area <- st_read("StudyArea.shp")
+#   Limite_Favelas_2019 <- st_read("Limite_Favelas_2019.shp")
+#   stations <- st_read("stations.shp")
+#   pred <- raster("suscetibilidade_rio.tif")
+#   slopeUnits <- st_read("slusmooth_gen_subset.shp")
+#   # Perform processing...
+# 
+#   saveRDS(final_rioslides, "landslides_2023_with_pred.rds")
+#   saveRDS(study_area, "StudyArea.rds")
+#   saveRDS(Limite_Favelas_2019, "Limite_Favelas_2019.rds")
+#   saveRDS(stations, "stations.rds")
+#   saveRDS(pred, "suscetibilidade_rio.rds")
+#   saveRDS(slopeUnits, "slusmooth_gen_subset.rds")
+# }
+# 
+# # Call the function to save the data
+# save_processed_data()
 
-final_rioslides     <- st_read("landslides_2023_with_pred.shp")#landslides_2023.shp
-study_area          <- st_read("StudyArea.shp")
-Limite_Favelas_2019 <- st_read("Limite_Favelas_2019.shp")
+
+# Call the function to save the data
+save_processed_data()
+
+
+final_rioslides     <- readRDS("landslides_2023_with_pred.rds")#landslides_2023.rds
+study_area          <- readRDS("StudyArea.rds")
+Limite_Favelas_2019 <- readRDS("Limite_Favelas_2019.rds")
 Limite_Favelas_2019 <- st_simplify(Limite_Favelas_2019, dTolerance = 10)
-stations            <- st_read("stations.shp")
-pred                <- raster("suscetibilidade_rio.tif")
+stations            <- readRDS("stations.rds")
+pred                <- readRDS("suscetibilidade_rio.rds")
 
 # Generate a custom color palette including a color for NA values
 customPalette <- colorFactor(palette = c("red", "#008000", "yellow"), 
                              domain = c(1, 2, 3), 
                              na.color = "transparent")
 
-pred2                <- raster("suscetibilidade_DD_rio.tif")
+#pred2                <- readRDS("suscetibilidade_DD_rio.rds")
 
 # Generate a custom color palette including a color for NA values
 customPalette2 <- colorFactor(palette = c("#94a8af",  "#d2d2d2", "#b9a88d"), 
@@ -80,7 +108,7 @@ image_files <- c("16_Tijuca.png","1_Bangu.png", "10_Méier.png", "11_Paquetá.pn
                  "5_Guaratiba.png", "6_Ilha do Governador.png", "7_Inhaúma.png", 
                  "8_Jacarepaguá.png", "9_Madureira.png") # Continue with the rest of your images
 
-slopeUnits <- st_read("slusmooth_gen_subset.shp")
+slopeUnits <- readRDS("slusmooth_gen_subset.rds")
 slopeUnits <- sf::st_transform(slopeUnits, st_crs(study_area))
 slopeUnits   <- st_transform(slopeUnits, 4326)
 
@@ -96,6 +124,7 @@ n_breaks= 5 # Define the number of breaks you want
 jenks_breaks <- classIntervals(slopeUnits$nslide, n = n_breaks, style = "jenks")$brks
 # Define colors (adjust the number of colors to match n_breaks - 1)
 colors <- rev(viridis(length(jenks_breaks) - 1, option = "C"))
+#colors <- c("#440356", "#4A377A", "#486593", "#2E818F", "#2E9E82", "#4ABD6E", "#99D34A", "#FAE722")
 colors <- c("#440356", "#4F5F95", "#218F8D", "#52C569", "#FAE722")
 # Create a color palette function
 colorPalette <- colorBin(palette = rev(colors), domain = slopeUnits$nslide, bins = jenks_breaks, na.color = "transparent")
@@ -694,7 +723,7 @@ ui <- fluidPage(
     tabPanel("Slope units",
              h3("Slope Units"),
              mainPanel(
-                 leafletOutput("map4", width = "100%", height = "600px"),
+                 leafletOutput("map4",  height = "800px"),
                  p(style = "color: grey; font-size: 80%; text-align: justify;",
                    "This map provides an insightful visualization of slope units (SUs) distinguished by color gradients, which now reflect the number of landslides (nslide) recorded in each unit. The subset displayed are only the one containig signifivant amount of non-flat terrain (significant topographic variation). In the context of landslide susceptibility prediction, flat terrain, also denimonated as 'trivial terrain' (Steger et al., 2017) should not represented as it typically holds little to no likelihood for such events to happen. By focusing on areas with significant topographical variations, the map targets regions of heightened relevance to landslide analysis, excluding flat terrains which typically present minimal landslide occurence potential. It's important to note that for data protection and privacy considerations, the map's zoom levels are managed to ensure a balance between providing useful information and safeguarding sensitive data. Precise locations are generalized to comply with data protection standards, ensuring the privacy of potentially affected areas.",
                    ),
