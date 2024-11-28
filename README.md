@@ -50,8 +50,8 @@ While this project is currently self-funded and does not receive financial suppo
 <p align="center">
   <img
     src="/Shinny_app_RioSlide/www/CNPq.png"
-    width="500"  
-    height="214"> 
+    width="250"  
+    height="107"> 
 </p>
 
 
