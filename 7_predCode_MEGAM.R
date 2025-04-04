@@ -3,11 +3,14 @@ library(raster)
 library(mgcv)
 library(gamm4)  # Load the gamm4 package
 library(dplyr)
+#install.packages("Matrix")
+library(Matrix)
 
-setwd("E:/PROslide_RIO/DATA2")
+
+setwd("D:/PROslide_RIO/DATA2")
 
 # Load the training dataset
-load("E:/PROslide_RIO/DATA/final_train.Rd")
+load("D:/PROslide_RIO/DATA/final_train.Rd")
 # Subset the data where slide = 1 (TRUE)
 final_train_subset <- subset(final_train, slide == TRUE)
 
@@ -21,7 +24,7 @@ final_train_f <- final_train %>%
 final_train=rbind(final_train_f, final_train_t)
 # Show the summary of the subsetted data
 summary(final_train_subset)
-write.csv(final_train_subset, "E:/PROslide_RIO/DATA2/slides.csv", row.names = FALSE)
+write.csv(final_train_subset, "D:/PROslide_RIO/DATA2/slides.csv", row.names = FALSE)
 
 
 
@@ -215,6 +218,7 @@ output_filename1 <- "pred_megam.tif"
 #                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e4)))
 
 # Fit the mixed-effects GAM model with 'fav_res' as a random effect
+#https://stackoverflow.com/questions/77481539/error-in-initializeptr-function-cholmod-factor-ldeta-not-provided-by-pack
 gam_fit1 <- gamm4(fo1, random = ~(1|fav_res), data = final_train, family = binomial,
                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e4)))
 

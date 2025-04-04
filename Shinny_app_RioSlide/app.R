@@ -34,7 +34,7 @@ library(classInt)
 
 
 # Call the function to save the data
-save_processed_data()
+#save_processed_data()
 
 
 final_rioslides     <- readRDS("landslides_2023_with_pred.rds")#landslides_2023.rds
@@ -623,73 +623,52 @@ ui <- fluidPage(
     
     
     
-    # Map and Data Visualization Tab
-    tabPanel("The existing susceptibility map",
-             mainPanel(
-               h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
-               leafletOutput("map2", width = "100%", height = "600px"),
-               p(style = "color: grey; font-size: 80%; text-align: justify;",
-                 "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro. We have preserved the original color scheme to maintain visual consistency and the interpretive framework of the Prefeitura's study. To enhance rendering performance and user experience, the dataset has been optimized through standard GIS techniques, consistent with the scientific partnership agreement and the data sharing and use policies of the Prefeitura. This optimized dataset adheres to the Creative Commons Attribution 4.0 International License (CC BY 4.0), allowing for sharing and adaptation with proper credit and indication of changes. The data is provided 'as is' without warranty and should be used in accordance with the provided license.",
-                 a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
-                 " | ",
-                 a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
-               ),
-               div(style = "text-align: center;", img(src = "plot2.png", height = "300px")), # Image
-               div(style = "text-align: left; padding-top: 20px;",
-                   p(style = "color: grey; font-size: 80%; text-align: justify;",
-                     strong("Legend for the plot:"), " ",
-                     HTML(legend_text) # Insert the updated legend text
-                   ))),
-             # tags$div(
-             #   id = "scrolling-images",
-             #   style = "overflow-x: auto; white-space: nowrap; width: 100%; padding: 20px 0;",
-             #   # These images have an onclick event that triggers the showModal function in the server
-             #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')"),
-             #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')")
-             #   # Add more images as needed
-             # ),
-             tags$div(
-               id = "image-grid",
-               style = "display: flex; flex-wrap: wrap; justify-content: space-around; padding: 20px 0;",
-               lapply(image_files, function(image) {
-                 tags$div(
-                   style = "flex-basis: 48%; margin-bottom: 20px; box-sizing: border-box; padding: 5px;", # Adjust this to have two images per row
-                   tags$img(
-                     src = image,
-                     style = "width: 100%; height: auto; border: none !important;", # Ensure no border with !important
-                     onclick = paste0("Shiny.setInputValue('image_clicked', '", image, "')")
-                   )
-                 )
-               })
-             )
-             
-             
-             ,
-             
-    ),
-    
-    
-    
-    
-    
     # # Map and Data Visualization Tab
-    # tabPanel("The NEW susceptibility map",
+    # tabPanel("The existing susceptibility map",
     #          mainPanel(
-    #            h4("Data-driven Landslide Susceptibility Map for Rio de Janeiro"),
-    #            leafletOutput("map3", width = "100%", height = "600px"),
+    #            h4("Landslide and the Available Susceptibility Map for Rio de Janeiro"),
+    #            leafletOutput("map2", width = "100%", height = "600px"),
     #            p(style = "color: grey; font-size: 80%; text-align: justify;",
-    #              "This interactive map visualizes landslide susceptibility in Rio de Janeiro, as determined by a comprehensive data-driven analysis. The susceptibility classifications have been delineated through a Generalized Additive Model (GAM), accounting for various environmental factors such as topography, land cover, and geological features. The map layers include detailed depictions of susceptible areas, landslide incidents, and favela boundaries."
+    #              "This map showcases the dataset on susceptibility to landslides provided by the Prefeitura da Cidade do Rio de Janeiro. We have preserved the original color scheme to maintain visual consistency and the interpretive framework of the Prefeitura's study. To enhance rendering performance and user experience, the dataset has been optimized through standard GIS techniques, consistent with the scientific partnership agreement and the data sharing and use policies of the Prefeitura. This optimized dataset adheres to the Creative Commons Attribution 4.0 International License (CC BY 4.0), allowing for sharing and adaptation with proper credit and indication of changes. The data is provided 'as is' without warranty and should be used in accordance with the provided license.",
+    #              a(href = "https://creativecommons.org/licenses/by/4.0/", target = "_blank", "CC BY 4.0 License"),
+    #              " | ",
+    #              a(href = "https://www.rio.rj.gov.br/web/georio/quem-somos", target = "_blank", strong("Source: GeoRIO"))
     #            ),
-    #            
-    #            div(style = "text-align: center;", img(src = "plottttttt2.png", height = "300px")), # Image
+    #            div(style = "text-align: center;", img(src = "plot2.png", height = "300px")), # Image
     #            div(style = "text-align: left; padding-top: 20px;",
     #                p(style = "color: grey; font-size: 80%; text-align: justify;",
     #                  strong("Legend for the plot:"), " ",
-    #                  HTML(legend_text2) # Insert the updated legend text
+    #                  HTML(legend_text) # Insert the updated legend text
+    #                ))),
+    #          # tags$div(
+    #          #   id = "scrolling-images",
+    #          #   style = "overflow-x: auto; white-space: nowrap; width: 100%; padding: 20px 0;",
+    #          #   # These images have an onclick event that triggers the showModal function in the server
+    #          #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')"),
+    #          #   tags$img(src = "plot2.png", style = "display: inline-block; margin-right: 10px;", onclick = "Shiny.setInputValue('image_clicked', 'plot2.png')")
+    #          #   # Add more images as needed
+    #          # ),
+    #          tags$div(
+    #            id = "image-grid",
+    #            style = "display: flex; flex-wrap: wrap; justify-content: space-around; padding: 20px 0;",
+    #            lapply(image_files, function(image) {
+    #              tags$div(
+    #                style = "flex-basis: 48%; margin-bottom: 20px; box-sizing: border-box; padding: 5px;", # Adjust this to have two images per row
+    #                tags$img(
+    #                  src = image,
+    #                  style = "width: 100%; height: auto; border: none !important;", # Ensure no border with !important
+    #                  onclick = paste0("Shiny.setInputValue('image_clicked', '", image, "')")
     #                )
-    #            )
+    #              )
+    #            })
     #          )
+    #          
+    #          
+    #          ,
+    #          
     # ),
+    
+    
     
     tabPanel("Dynamic Mapping Examples",
              h4("Dynamic Mapping Examples"),
@@ -1021,9 +1000,16 @@ ui <- fluidPage(
                        tags$hr(),
                        #div(style = "text-align: center;", img(src = "Proj_partners.jpg", height = "100px")),
                        h3(strong("Acknowledgement:")),
-                       p("While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq) and relates to the process number 234815/2014-0. The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives."),
+                       p("While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq). The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives."),
                        div(style = "text-align: center;", img(src = "CNPq.png", height = "150px")),
                        p("Furthermore, we extend our gratitude to the Instituto Pereira Passos (IPP) and the Fundação Instituto de Geotécnica (GEO-RIO) for their invaluable data and support. Their contributions have been essential to the advancement of our research and the achievement of our project's objectives. We acknowledge the significance of their partnership in fostering scientific and technological development within our community."),
+                       
+                       
+                       tags$hr(),
+                       #div(style = "text-align: center;", img(src = "Proj_partners.jpg", height = "100px")),
+                       p("This application benefits from the ongoing support and insights of the CDRI Fellowship Programme, which enhances global infrastructure resilience. We are thankful for the continuous guidance and resources from CDRI that shape this project. This prototype is part of initial efforts and will be refined as we further engage with the CDRI community, harnessing collaborative and innovative approaches to strengthen disaster resilience of critical infrastructures."),
+                       
+                       div(style = "text-align: center;", img(src = "logoCDRI.png", height = "150px")),
                        
               ),
                # tabPanel("Timeline & Development plan",

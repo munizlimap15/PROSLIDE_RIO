@@ -11,6 +11,7 @@ source("2_slidesXsusc.R")
 # This script loads various predictors used in modeling landslide risk, such as rainfall, soil moisture, and elevation. 
 # It processes and prepares the predictors for integration with the landslide data.
 source("3_load_predictors.R")
+source("3_load_predictors_GRAPH_2025.R")
 
 # This script creates training samples for machine learning models, ensuring proper balancing of positive 
 # (landslide-prone) and negative (non-prone) regions. It outputs the datasets for model training.
@@ -109,7 +110,9 @@ source("20_pred_per_bairro.R")
 # It prepares slope data for integration into risk models.
 source("21_slopeunits.R")
 
+source("22_FIG_weather_RIO.R")
 
+source("23_FIG_landcover_discussion.R")
 
 
 source("CTRL-T\CTRL-T_code.R")

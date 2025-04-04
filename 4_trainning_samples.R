@@ -47,7 +47,7 @@ extent1
 #--------Sampling on the mask WITH FLAT AREAS
 # Distribute N (a number) points randomized within the mask extender defined above (Important: only one bounding rectangle is defined)
 # Since the sampling will be done on the bounding rectangle and therefore also outside of the study area, the number of points (N) should be greather than you landslide sample (2x-3x)
-N = 5000
+N = 10000
 
 #Create a data table (named "noslide") with the attribute "slide" and the coordinates,...
 #...where each point is assigned the value "0" (0 means -> is not a landslide point location)
@@ -171,18 +171,32 @@ summary(as.factor(final_train$geol))
 final_train <- final_train %>% drop_na()
 final_train <- final_train[!(final_train$geomorph == 255 | final_train$geol == 255),]
 
-# Count the number of TRUE and FALSE in the 'slide' column
-n_true <- sum(final_train$slide == "TRUE")
-n_false <- sum(final_train$slide == "FALSE")
 
-# Get the minimum count between TRUE and FALSE
-n_min <- min(n_true, n_false)
 
-# Randomly sample the same number of TRUE and FALSE rows
-final_train <- final_train %>%
-  group_by(slide) %>%
-  sample_n(n_min) %>%
-  ungroup()
+
+
+
+# # Count the number of TRUE and FALSE in the 'slide' column
+# n_true <- sum(final_train$slide == "TRUE")
+# n_false <- sum(final_train$slide == "FALSE")
+# 
+# # Get the minimum count between TRUE and FALSE
+# n_min <- min(n_true, n_false)
+# 
+# # Randomly sample the same number of TRUE and FALSE rows
+# final_train <- final_train %>%
+#   group_by(slide) %>%
+#   sample_n(n_min) %>%
+#   ungroup()
+
+
+
+
+
+
+
+
+
 
 # Check the summary again
 summary(final_train)
