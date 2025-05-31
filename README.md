@@ -1,9 +1,9 @@
 # RIOSLIDE
 
 <p align="center">
-  <img src="https://img.shields.io/github/last-commit/PedroLima/RioSlide?color=blue&label=last%20commit" />
-  <img src="https://img.shields.io/github/languages/top/PedroLima/RioSlide?logo=r" />
-  <img src="https://img.shields.io/github/languages/count/PedroLima/RioSlide" />
+  <img src="https://img.shields.io/github/last-commit/munizlimap15/PROSLIDE_RIO?color=blue&label=last%20commit" />
+  <img src="https://img.shields.io/github/languages/top/munizlimap15/PROSLIDE_RIO?logo=r" />
+  <img src="https://img.shields.io/github/languages/count/munizlimap15/PROSLIDE_RIO" />
 </p>
 
 Built with the tools and technologies:
