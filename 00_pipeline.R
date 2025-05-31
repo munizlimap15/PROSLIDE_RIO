@@ -109,6 +109,7 @@ source("20_pred_per_bairro.R")
 # This script handles slope units for the study area, processing slope-related data for susceptibility analysis.
 # It prepares slope data for integration into risk models.
 source("21_slopeunits.R")
+source("21_slopeunits._FIG_3x1_CDRI.R")
 
 source("22_FIG_weather_RIO.R")
 

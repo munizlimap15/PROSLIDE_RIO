@@ -5,6 +5,8 @@ library(scales)
 library(dplyr)
 library(cowplot)
 library(tidyterra)
+library(ggspatial)
+
 
 # Caminho base
 base_path <- "D:/PROslide_RIO/DATA2/"
@@ -89,7 +91,7 @@ saveRDS(brick_df, file = "D:/PROslide_RIO/DATA2/brick_df_tagged.rds")
 ###########################################################
 ###########################################################
 ###########################################################
-#brick_df <- readRDS("D:/PROslide_RIO/DATA2/brick_df_masked.rds")# %>% sample_n(1000)
+#brick_df <- readRDS("D:/PROslide_RIO/DATA2/brick_df_masked.rds") %>% sample_n(1000)
 brick_df <- readRDS("D:/PROslide_RIO/DATA2/brick_df_tagged.rds") #%>% sample_n(10000)
 hillshade_df <- readRDS("D:/PROslide_RIO/DATA2/hillshade_df.rds") #%>% sample_n(10000)
 colnames(hillshade_df) <- c("x", "y", "hillshade")
@@ -124,21 +126,45 @@ p_raster_slope <- ggplot() +
   ggnewscale::new_scale_fill() +
   
   # Slope on top
-  geom_raster(data = brick_df, aes(x = x, y = y, fill = slope), alpha = 0.75) +
+  geom_raster(data = brick_df, aes(x = x, y = y, fill = slope), alpha = 0.6) +
   scale_fill_viridis_c(name = "Slope (°)", direction=-1,
                        guide = guide_colorbar(barwidth = 15))+ #https://dieghernan.github.io/tidyterra/reference/scale_hypso.html
   #scale_fill_gradient2(name = "Slope (°)",low = 'blue', mid = 'white', high = 'red', guide = guide_colorbar(barwidth = 15)) +
   
-  
+  labs(title = "C) Slope Map")+
   coord_equal() +
-  theme_void() +
-  theme(legend.position = "bottom")
+  # Add scale and north arrow
+  annotation_scale(location = "bl", width_hint = 0.2, line_col = "gray30",  text_col = "gray30" )+
+  annotation_north_arrow( location = "bl",which_north = "true",pad_y = unit(0.2, "in"),
+                          style = north_arrow_fancy_orienteering(
+                            fill = c("gray30", "gray70"),
+                            line_col = "gray30" )) +
+  #theme_void() +
+  theme(legend.position = "bottom",
+        axis.title = element_blank(),
+        axis.text = element_blank())
 
 
 
 
 
-grad_hypso <- hypso.colors(10, "dem_poster")
+# 1. Get elevation range directly from brick_df
+r_limits <- range(brick_df$elevation, na.rm = TRUE)
+# 2. Round DOWN the min to nearest 100 and UP the max to nearest 100
+r_limits <- c(0, ceiling(r_limits[2] / 100)) * 100
+# 3. Optional: enforce maximum limit (e.g., cap at 1200m if your data stops at ~1100)
+r_limits[2] <- min(r_limits[2], 1200)
+
+# 2. Build hypsometric palette
+grad_hypso <- c(
+  "#006837",  # deep green
+  "#78C679",  # light green
+  #"#FEE08B",  # yellow
+  "#F46D43",  # orange-red
+  "#A50026",  # dark red
+  "#FFFFFF"   # white
+)
+
 p_raster_dtm <- ggplot() +
   # Hillshade as grayscale background
   geom_raster(data = hillshade_df, aes(x = x, y = y, fill = hillshade)) +
@@ -148,9 +174,17 @@ p_raster_dtm <- ggplot() +
   ggnewscale::new_scale_fill() +
   
   # DTM
-  geom_raster(data = brick_df, aes(x = x, y = y, fill = elevation), alpha = 0.75) +
-  scale_fill_gradientn(colours = grad_hypso, na.value = NA)+
-
+  geom_raster(data = brick_df, aes(x = x, y = y, fill = elevation), alpha = 0.6) +
+  scale_fill_gradientn(
+    colours = grad_hypso,
+    values = scales::rescale(c(0, 100, 200, 300, 400, 500, 600, 1000)),
+    limits = r_limits,
+    name = "Elevation (m)",
+    guide = guide_colorbar(barwidth = 15),
+    na.value = NA
+  ) +
+  labs(title = "F) Elevation Map")+
+  
   # tidyterra::scale_fill_hypso_b(breaks = seq(0, 1250, 200), palette = "colombia_hypso",
   #                               guide = guide_colorbar(barwidth = 15),
   #                               name = "Elevation (m)")+
@@ -158,8 +192,16 @@ p_raster_dtm <- ggplot() +
   
   
   coord_equal() +
-  theme_void() +
-  theme(legend.position = "bottom")
+  # Add scale and north arrow
+  annotation_scale(location = "bl", width_hint = 0.2, line_col = "gray30",  text_col = "gray30" )+
+  annotation_north_arrow( location = "bl",which_north = "true", pad_y = unit(0.2, "in"),
+                          style = north_arrow_fancy_orienteering(
+    fill = c("gray30", "gray70"),
+    line_col = "gray30" )) +
+  #theme_void() +
+  theme(legend.position = "bottom",
+        axis.title = element_blank(),
+        axis.text = element_blank())
 
 
 ###########################################################
@@ -168,15 +210,20 @@ p_raster_dtm <- ggplot() +
 # Histograma da declividade
 # Histogram slope
 p_hist_slope <- ggplot(brick_df, aes(x = slope)) +
-  geom_histogram(aes(y = after_stat(count / sum(count))), bins = 90, fill = "gray70", color = "black") +
+  geom_histogram(aes(y = after_stat(count / sum(count))), bins = 90, fill = "gray70", color = "black",
+                  linewidth=0.2) +
   scale_x_continuous(name = "Slope (°)", limits = c(0, 90)) +
-  scale_y_continuous(name = "% of pixels", labels = percent_format(), limits = c(0, .15)) 
+  labs(title = "A) Frequency distribution of slope angles")+
+  
+  scale_y_continuous(name = "% of pixels in the study area", labels = percent_format(), limits = c(0, .15)) 
 
 # Histogram elevation
 p_hist_dtm <- ggplot(brick_df, aes(x = elevation)) +
-  geom_histogram(aes(y = after_stat(count / sum(count))), bins = 100, fill = "gray70", color = "black") +
+  geom_histogram(aes(y = after_stat(count / sum(count))), bins = 100, fill = "gray70", color = "black",
+                 linewidth=0.2) +
   scale_x_continuous(name = "Elevation (m)", limits = c(0, 1000)) +
-  scale_y_continuous(name = "% of pixels", labels = percent_format(), limits = c(0, .15)) 
+  labs(title = "D) Frequency distribution of elevation") +
+  scale_y_continuous(name = "% of pixels in the study area", labels = percent_format(), limits = c(0, .15)) 
 
 
 
@@ -201,9 +248,10 @@ p_stack_slope <- ggplot(final_train, aes(x = slope, fill = slide)) +
   scale_fill_manual(values = c("FALSE" = "#00bfc4", "TRUE" = "#f8766d"),labels = c("no-slide", "slide"))+
   scale_y_continuous(labels = percent_format(), name = "Proportion of the training samples") +
   scale_x_continuous(name = "Slope (°)", limits = c(0, 90)) +
-  labs(title = "Slope vs. Landslide occurrence", fill = NULL) +
-  theme(plot.title = element_blank(),
-        legend.position = c(0.7, 0.9),            # inside top-center
+  labs(title = "B) Training sample density by slope") +
+  theme(#plot.title = element_blank(),
+    legend.title = element_blank(),
+    legend.position = c(0.7, 0.9),            # inside top-center
         legend.justification = c(0.5, 1),
         legend.direction = "horizontal")
 
@@ -213,23 +261,49 @@ p_stack_dtm <- ggplot(final_train, aes(x = dtm, fill = slide)) +
   scale_fill_manual(values = c("FALSE" = "#00bfc4", "TRUE" = "#f8766d"),labels = c("no-slide", "slide"))+
   scale_y_continuous(labels = percent_format(), name = "Proportion of the training samples") +
   scale_x_continuous(name = "Elevation (m)", limits = c(0, 1000)) +
-  labs(title = "Elevation vs. Landslide occurrence", fill = NULL) +
-  theme(plot.title = element_blank(),
-        legend.position = c(0.7, 0.9),            # inside top-center
+  labs(title = "E) Training sample density by elevation") +
+  theme(#plot.title = element_blank(),
+    legend.title = element_blank(),
+    legend.position = c(0.7, 0.9),            # inside top-center
         legend.justification = c(0.5, 1),
         legend.direction = "horizontal")
 
 
-# Compose figure
-row_slope <- plot_grid(p_raster_slope, p_hist_slope, p_stack_slope, nrow = 1, rel_widths = c(1.8, 1, 1))
-row_dtm   <- plot_grid(p_raster_dtm, p_hist_dtm, p_stack_dtm,     nrow = 1, rel_widths = c(1.8, 1, 1))
+# # Compose figure
+# row_slope <- plot_grid(p_raster_slope, p_hist_slope, p_stack_slope, nrow = 1, rel_widths = c(1.8, 1, 1))
+# row_dtm   <- plot_grid(p_raster_dtm, p_hist_dtm, p_stack_dtm,     nrow = 1, rel_widths = c(1.8, 1, 1))
+# 
+# final_plot <- plot_grid(row_slope, row_dtm, ncol = 1, rel_heights = c(1, 1))
+# 
+# # Save
+# ggsave("D:/PROslide_RIO/Figs/slope_dtm_composite2.png", final_plot, width = 16, height = 9, dpi = 300)
 
-final_plot <- plot_grid(row_slope, row_dtm, ncol = 1, rel_heights = c(1, 1))
+############################################################
+# Arrange slope plots in a column: top = hist + stack, bottom = map
+# Slope column (top row of hist + stack, bottom row = map)
+col_slope <- plot_grid(
+  plot_grid(p_hist_slope, p_stack_slope, ncol = 2),
+  p_raster_slope,
+  ncol = 1,
+  rel_heights = c(1, 1.3),
+  
+  label_y = c(1, 0.9)
+)
 
-# Save
-ggsave("D:/PROslide_RIO/Figs/slope_dtm_composite.png", final_plot, width = 16, height = 9, dpi = 300)
+# Elevation column
+col_dtm <- plot_grid(
+  plot_grid(p_hist_dtm, p_stack_dtm, ncol = 2),
+  p_raster_dtm,
+  ncol = 1,
+  rel_heights = c(1, 1.3),
+  
+  label_y = c(1, 0.9)
+)
 
+# Final layout: slope on the left, dtm on the right
+final_plot <- plot_grid(col_slope, col_dtm, ncol = 2, labels = NULL, label_size = .8, rel_widths = c(1, 1))
 
+ggsave("D:/PROslide_RIO/Figs/slope_dtm_composite_new3.png", final_plot, width = 16, height = 9, dpi = 300)
 
 
 # ## Aspect

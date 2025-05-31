@@ -34,16 +34,17 @@ rio_temp <- bind_rows(
 
 # Temperature plot
 plot_temp <- ggplot(rio_temp, aes(x = doy, y = value, color = var)) +
-  geom_point(alpha = 0.1, size = 0.3) +
+  geom_line(alpha = 0.3, linewidth = 0.3) +  # THIN LINES INSTEAD OF POINTS
   geom_smooth(se = TRUE, span = 0.01, linewidth = 1) +
   scale_color_manual(values = c("Daily minimum" = "darkblue", "Daily maximum" = "darkred")) +
   scale_x_continuous(
     breaks = seq(15, 365, by = 30.5),
     labels = month.abb,
     expand = expansion(mult = c(0, 0))
-  ) +
+  )+
   labs(
-    title = "Temperature Pattern (°C) [1950–2024]",
+    title = "A) Seasonal temperature Pattern (°C) [1950–2024]",
+    #subtitle = "Based on TerraClimate dataset",
     x = NULL,
     y = "Temperature °C"
   ) +
@@ -84,7 +85,8 @@ plot_precip <- ggplot(plot_precip_data, aes(x = doy, y = value)) +
     expand = expansion(mult = c(0, 0))
   ) +
   labs(
-    title = "Average Monthly Precipitation Pattern (mm) [1950–2024]",
+    title = "B) Average Monthly Precipitation Pattern (mm) [1950–2024]",
+    #subtitle = "Based on TerraClimate dataset",
     x = "Month",
     y = "Precipitation (mm)"
   ) +
