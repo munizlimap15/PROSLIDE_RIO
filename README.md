@@ -79,7 +79,7 @@ For more information and updates on the project, please visit [RioSLIDE](https:/
 
 **Acknowledgement**
 
-This research received partial support from the **Fundação Carlos Chagas Filho de Amparo à Pesquisa do Estado do Rio de Janeiro (FAPERJ)** and the **Coalition for Disaster Resilient Infrastructure (CDRI)**. Although part of this project is self-funded, it is developed in alignment with the guidelines of the **Brazilian National Council for Scientific and Technological Development (CNPq)**. 
+This research received partial support from the **Fundação Carlos Chagas Filho de Amparo à Pesquisa do Estado do Rio de Janeiro (FAPERJ)** and the **Coalition for Disaster Resilient Infrastructure (CDRI)** and the **Brazilian National Council for Scientific and Technological Development (CNPq)**. 
 
 <p align="center">
   <img
