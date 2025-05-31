@@ -36,11 +36,9 @@ The initiative builds on previous models and incorporates historical data analys
 **Key Features**
 
 - 🌧️ **Exporting Susceptibility Predictions**: Seamlessly integrates susceptibility data into Shiny applications for enhanced visualization.  
-- 📊 **Automated Data Extraction**: Streamlines the management of rainfall data from multiple sources, saving valuable time. Check [this repository](https://github.com/munizlimap15/PluvioDataRio) 
-- 🗺️ **Interactive Visualization**: Offers an engaging mapping interface for exploring landslide susceptibility in real-time.  
-- 📈 **Comprehensive Data Analysis**: Analyzes complex spatial relationships, simplifying the understanding of landslide risks.  
+- 📊 **Automated Data Extraction**: Streamlines the management of rainfall data from official sources. Check [this repository](https://github.com/munizlimap15/PluvioDataRio) 
+- 📈 🗺️ **Interactive Visualization**: Offers an engaging mapping interface for exploring landslide susceptibility in real-time.  [Link here.](https://pedrohe.shinyapps.io/RioSlide_rain/) 
 - 🖥️ **User-Friendly Interface**: Built with Shiny, enabling easy interaction with data for users of all technical levels.  
-- 🔍 **Integration with Advanced Models**: Implements Generalized Additive Models (GAM) for precise predictions of landslide occurrences.
 
 **Installation**
 
