@@ -1,6 +1,20 @@
 # RIOSLIDE
 
 <p align="center">
+  <img src="https://img.shields.io/github/last-commit/PedroLima/RioSlide?color=blue&label=last%20commit" />
+  <img src="https://img.shields.io/github/languages/top/PedroLima/RioSlide?logo=r" />
+  <img src="https://img.shields.io/github/languages/count/PedroLima/RioSlide" />
+</p>
+
+Built with the tools and technologies:
+
+![Markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)
+![R](https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white)
+
+
+
+
+<p align="center">
   <img
     src="/Shinny_app_RioSlide/www/myplot.png"
     width="516"  
@@ -66,9 +80,9 @@ For more information and updates on the project, please visit [RioSLIDE](https:/
 
 * [ENGAGE UNIVIE](https://geographie.univie.ac.at/arbeitsgruppen/engage-geomorphologische-systeme-und-risikoforschung/)
 
-**Acknowledgement:**
+**Acknowledgement**
 
-While this project is currently self-funded and does not receive financial support, it is designed in alignment with the guidelines of the Brazilian National Council for Scientific and Technological Development (CNPq). The project team recognizes the vital role of CNPq in promoting scientific and technological development in Brazil and appreciates the framework it provides for research initiatives.
+This research received partial support from the **Fundação Carlos Chagas Filho de Amparo à Pesquisa do Estado do Rio de Janeiro (FAPERJ)** and the **Coalition for Disaster Resilient Infrastructure (CDRI)**. Although part of this project is self-funded, it is developed in alignment with the guidelines of the **Brazilian National Council for Scientific and Technological Development (CNPq)**. 
 
 <p align="center">
   <img
@@ -76,6 +90,15 @@ While this project is currently self-funded and does not receive financial suppo
     width="500"  
     height="214">
 </p>
+
+<p align="center">
+  <img
+    src="/Shinny_app_RioSlide/www/logoCDRI.png"
+    width="500"  
+    height="214">
+</p>
+
+
 
 Feel free to contribute to the project or reach out for collaborations. Together, we can make a significant impact on reducing the risks associated with landslides in Rio de Janeiro.
 [pedro.lima@univie.ac.at](mailto:pedro.lima@univie.ac.at)
