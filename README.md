@@ -26,9 +26,6 @@ Built with the tools and technologies:
     src="/Shinny_app_RioSlide/www/Proj_partners.jpg">
 </p>
 
-<p align="center">
-  <img src="/Shinny_app_RioSlide/www/language_badges.png" width="300">
-</p>
 
 The RioSLIDE project focuses on analyzing and predicting landslides for the Rio de Janeiro municipality. Utilizing advanced geospatial data and predictive modeling techniques, the project aims to identify areas with high landslide susceptibility. The primary goal is to provide actionable insights to mitigate threats associated with landslides, especially during extreme weather conditions.
 
@@ -87,15 +84,15 @@ This research received partial support from the **Fundação Carlos Chagas Filho
 <p align="center">
   <img
     src="/Shinny_app_RioSlide/www/CNPq.png"
-    width="500"  
-    height="214">
+    width="250"  
+    height="107">
 </p>
 
 <p align="center">
   <img
     src="/Shinny_app_RioSlide/www/logoCDRI.png"
-    width="500"  
-    height="214">
+    width="250"  
+    height="107">
 </p>
 
 
